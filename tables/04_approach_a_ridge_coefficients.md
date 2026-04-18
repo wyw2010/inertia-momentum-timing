@@ -1,0 +1,11 @@
+| feature          |   standardized_coef |
+|:-----------------|--------------------:|
+| mkt_ret_1m       |             -0.0054 |
+| mkt_dd           |              0.0045 |
+| mkt_ret_12m      |              0.0037 |
+| bear_x_var       |             -0.0021 |
+| mom_var6         |              0.0018 |
+| mkt_vol6         |              0.0006 |
+| bear             |             -0.0004 |
+| umd_dd           |              0.0003 |
+| (selected alpha) |            100.0000 |

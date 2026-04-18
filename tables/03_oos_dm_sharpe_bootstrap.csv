@@ -1,0 +1,4 @@
+,sharpe,ci_low,ci_high
+Static UMD (2000+),0.1234,-0.2723,0.5096
+DM OOS gross,0.3880,0.0522,0.6562
+DM OOS net,0.3696,0.0330,0.6387
