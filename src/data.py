@@ -43,16 +43,53 @@ KF_FILES = {
 }
 
 
-def _download(url: str, cache_name: str, force: bool = False) -> bytes:
-    """Download a URL (cached) and return raw bytes."""
+def _download(
+    url: str,
+    cache_name: str,
+    force: bool = False,
+    timeout: int = 120,
+    retries: int = 3,
+) -> bytes:
+    """
+    Download a URL (cached) and return raw bytes.
+
+    Tries urllib first; if that fails (FRED's TLS handshake can flake
+    from Python on some networks), falls back to `curl` subprocess,
+    which is reliable on the user's machine. Retries with backoff.
+    """
+    import time
+    import subprocess
     cache_path = RAW_DIR / cache_name
     if cache_path.exists() and not force:
         return cache_path.read_bytes()
-    req = _urlreq.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with _urlreq.urlopen(req, timeout=60) as resp:
-        data = resp.read()
-    cache_path.write_bytes(data)
-    return data
+
+    last_err = None
+    for attempt in range(retries):
+        # Attempt 1: urllib
+        try:
+            req = _urlreq.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with _urlreq.urlopen(req, timeout=timeout) as resp:
+                data = resp.read()
+            cache_path.write_bytes(data)
+            return data
+        except Exception as e:
+            last_err = e
+
+        # Attempt 2: curl subprocess (bullet-proof on macOS/Linux)
+        try:
+            result = subprocess.run(
+                ["curl", "-sSL", "--max-time", str(timeout), url],
+                check=True, capture_output=True, timeout=timeout + 10,
+            )
+            data = result.stdout
+            if data:
+                cache_path.write_bytes(data)
+                return data
+        except Exception as e:
+            last_err = e
+
+        time.sleep(2 ** attempt)
+    raise RuntimeError(f"Failed to download {url} after {retries} attempts: {last_err}")
 
 
 def _parse_kf_zip(raw_bytes: bytes) -> str:
@@ -228,7 +265,7 @@ def get_fred_panel(force: bool = False) -> pd.DataFrame:
     out = {}
     for name, sid in FRED_SERIES.items():
         s = get_fred_series(sid, force=force)
-        out[name] = s.resample("M").last()
+        out[name] = s.resample("ME").last()
     return pd.DataFrame(out)
 
 
