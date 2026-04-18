@@ -147,253 +147,153 @@ DM Benchmark  & 10.5 & 14.2 & 0.74 & 5.6\% & $-34\%$ & General-purpose \\
 
 \section{The Momentum Premium and Why It Crashes}
 
-The empirical momentum effect in equity markets was first systematically documented by
-Jegadeesh and Titman (1993). A portfolio that is long the stocks that have outperformed over
-the prior year and short those that have underperformed earns persistent excess returns over
-the subsequent month. The Ken French up-minus-down (UMD) factor, which is our benchmark
-momentum portfolio throughout this paper, has delivered an annualized mean return of 7.5
-percent at 14.2 percent volatility from 1960 through 2026, a Sharpe ratio of 0.53. Its
-performance is not confined to U.S. equities or to any particular decade, and its persistence
-is one of the reasons it is regarded as one of the most robust pricing anomalies in the
-empirical asset pricing literature.
-
-Yet the distribution of monthly UMD returns is strongly non-Gaussian. Over the 1960 to 2026
-window the excess kurtosis is 10.0 and the skewness is negative 1.3. These are fat tails
-concentrated on the left. Figure~\ref{fig:staticumd} plots the cumulative return of static
-UMD on a logarithmic scale. The long run-up is genuine, but it is interrupted by multi-year
-stretches of flat or declining performance. Figure~\ref{fig:umddd} plots the drawdown from
-the trailing peak, which makes the cost of the tail risk more visible. Peak drawdown reaches
-78 percent in the 1932 aftermath of the Depression and 58 percent in the recovery from the
-2008 global financial crisis.
+The equity momentum effect (Jegadeesh and Titman 1993) has delivered 7.5 percent annualized
+mean return at 14.2 percent volatility since 1960, a Sharpe ratio of 0.53, and is one of the
+most robust pricing anomalies on record. Its distribution, however, is far from Gaussian:
+excess kurtosis of 10.0, skewness of $-1.3$, and peak drawdowns of 78 percent in 1932 and 58
+percent in the 2009 recovery (Figures~\ref{fig:staticumd} and \ref{fig:umddd}).
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/01_umd_cumret_log.png}
-\caption{Cumulative return of static UMD, 1927 through 2026. The log scale compresses the
-compounding gains and highlights the multi-year crashes.}
+\includegraphics[width=0.90\textwidth]{figures/01_umd_cumret_log.png}
+\caption{Cumulative return of static UMD, 1927 through 2026, log scale.}
 \label{fig:staticumd}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/02_umd_drawdown.png}
-\caption{Drawdown from trailing peak for static UMD, 1927 through 2026. Shaded area shows the
-magnitude of each crash.}
+\includegraphics[width=0.90\textwidth]{figures/02_umd_drawdown.png}
+\caption{Static UMD drawdown from trailing peak, 1927 through 2026.}
 \label{fig:umddd}
 \end{figure}
 
-The economic mechanism behind these crashes is now reasonably well understood. During
-extended bear markets, the short leg of momentum becomes concentrated in high-beta stocks
-that have already suffered substantial price declines. When the market rebounds, these
-distressed stocks often appreciate by several multiples, generating catastrophic losses on
-the short leg at precisely the moment when the long leg has little upside room left. Momentum
-crashes are therefore not random. They are structural, triggered by mean-reversion in
-severely depressed stocks conditional on a prior bear market. The question our research
-addresses is whether this conditional predictability can be exploited in real time.
+The mechanism is structural. In extended bear markets, the short leg of momentum concentrates
+in high-beta distressed stocks; when markets rebound, those names appreciate several-fold and
+inflict catastrophic losses on the short leg. Crashes are therefore not random but conditional
+on prior market state, which is what makes them forecastable.
 
-\section{The Academic Benchmark: Daniel and Moskowitz (2015)}
+\section{Academic Benchmark: Daniel and Moskowitz (2015)}
 
-The leading academic response to the momentum crash phenomenon is Daniel and Moskowitz (2015),
-which we denote DM hereafter. Their central insight is that the conditional mean and
-conditional variance of UMD are jointly forecastable from two slowly moving state variables:
-a bear-market indicator $I^{B}_t$, equal to one if the cumulative 24-month market excess
-return is non-positive, and the realized variance of UMD over the preceding six months,
-denoted $\sigma^2_{t}$. Their predictive regression is
+Daniel and Moskowitz (2015), denoted DM, show that the conditional mean and variance of UMD
+are jointly forecastable from two slow-moving state variables: a bear-market indicator
+$I^{B}_t$ equal to one when the cumulative 24-month market excess return is non-positive, and
+the six-month realized variance of UMD, $\sigma^2_t$. Their predictive regression is
 \begin{equation}
-r^{UMD}_{t+1} \;=\; \alpha \;+\; \beta_1\, I^{B}_t \;+\; \beta_2 \,\bigl(I^{B}_t \cdot \sigma^2_{t}\bigr) \;+\; \beta_3\, \sigma^2_{t} \;+\; \varepsilon_{t+1}.
+r^{UMD}_{t+1} = \alpha + \beta_1 I^{B}_t + \beta_2 (I^{B}_t \cdot \sigma^2_t) + \beta_3 \sigma^2_t + \varepsilon_{t+1}.
 \label{eq:dmreg}
 \end{equation}
-The estimated coefficient $\beta_2$ on the interaction term is strongly negative and
-statistically significant. The economic interpretation is that when markets have been falling
-for two years and momentum itself is running hot, expected UMD returns collapse. This is the
-diagnostic fingerprint of a pending crash.
-
-DM then construct a dynamic strategy using the textbook time-varying mean-variance weight
-from the capital allocation literature,
+The $\beta_2$ coefficient is strongly negative: bear markets combined with elevated UMD
+variance predict a crash. DM then apply the time-varying mean-variance weight from the
+capital allocation literature,
 \begin{equation}
-w^{DM}_t \;=\; c \cdot \frac{\widehat{E}_t[r^{UMD}_{t+1}]}{\widehat{\mathrm{Var}}_t[r^{UMD}_{t+1}]},
+w^{DM}_t = c \cdot \frac{\widehat{E}_t[r^{UMD}_{t+1}]}{\widehat{\mathrm{Var}}_t[r^{UMD}_{t+1}]},
 \label{eq:dmw}
 \end{equation}
-where the risk-aversion scaling $c$ is chosen to target a fixed unconditional volatility
-comparable to static UMD. In our implementation we use an exponentially weighted moving
-average (EWMA) of UMD variance with a half-life of six months as $\widehat{\mathrm{Var}}_t$,
-floor it at the tenth percentile of its distribution to prevent leverage explosions in calm
-periods, and clip the final weight to $[-1,\,+3]$ to enforce a realistic fund mandate. Our
-in-sample replication of the DM strategy roughly doubles the Sharpe ratio from 0.43 to 0.82
-and cuts the maximum drawdown from 78 percent to 34 percent, consistent with their
-published results.
-
-Before adopting the DM result as our benchmark, however, we submit it to genuine
-out-of-sample discipline. We refit the predictive regression annually on an expanding
-training window starting in 1928. The earliest out-of-sample month is January 1960, giving
-us 793 months of forward-tested experience through February 2026. Over this window DM still
-outperforms static UMD meaningfully: Sharpe 0.74 against 0.53, with a 95 percent
-block-bootstrap confidence interval of $[0.47,\,0.97]$. The maximum drawdown falls to 34
-percent, skewness from $-1.3$ to $-0.3$, and excess kurtosis from 10.0 to 4.4.
-Figure~\ref{fig:oosdm} shows the OOS comparison. The DM benchmark is a high bar that an
-honest timing strategy must clear.
+where $c$ is chosen to target a fixed unconditional volatility. Our implementation uses EWMA
+variance with a six-month half-life (floored at the tenth percentile to prevent leverage
+explosions), with the weight clipped to $[-1, +3]$ as a realistic mandate. Under strict
+out-of-sample discipline (expanding window, annual refits, first OOS month January 1960,
+793 months of forward-tested experience through 2026), DM delivers Sharpe 0.74 with 95 percent
+bootstrap CI $[0.47, 0.97]$ and max drawdown 34 percent, materially better than static's 0.53
+and 58 percent (Figure~\ref{fig:oosdm}). DM is the benchmark to beat.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/07_oos_dm_cumret.png}
-\caption{Out-of-sample Daniel and Moskowitz (2015) dynamic momentum versus static UMD, 1960
-through 2026, net of 20 basis point one-way costs, log scale.}
+\includegraphics[width=0.90\textwidth]{figures/07_oos_dm_cumret.png}
+\caption{OOS DM dynamic momentum versus static UMD, 1960 through 2026, net of 20 bp one-way costs.}
 \label{fig:oosdm}
 \end{figure}
 
 \section{Three Orthogonal Timing Approaches}
 
-Our research question is whether DM's predictive regression is already the statistical ceiling
-on what can be learned about momentum crashes, or whether alternative machinery extracts
-additional signal. We test three approaches that share the same out-of-sample discipline and
-the same feature environment but differ fundamentally in how they generate regime signals.
-Each approach, used alone, constitutes a legitimate standalone strategy. The interesting
-question is whether their errors are uncorrelated enough that an ensemble dominates any
-individual approach.
+Can we beat DM? We test three methodologically orthogonal regime detectors, each sharing the
+same OOS discipline but using fundamentally different statistical machinery. Each is a
+legitimate standalone strategy; the research question is whether their errors are decorrelated
+enough to let an ensemble dominate.
 
-\subsection{Approach A: An expanded linear model with ridge regularization}
+\subsection{Approach A: Ridge-regularized linear extension}
 
-The most conservative extension of DM keeps the predictive regression framework in equation
-(\ref{eq:dmreg}) and expands the feature set. In addition to the DM originals, we add the
-six-month market realized volatility, the current market drawdown from its trailing peak, the
-UMD drawdown, and lagged one-month and twelve-month market excess returns. We standardize the
-eight features within each training window, then fit a ridge regression where the L2 penalty
-is chosen by five-fold cross-validation on a log-spaced grid. Five-fold rather than
-leave-one-out cross-validation matters: leave-one-out is notoriously noisy in the small
-samples we encounter at the start of each refit window and selects severely over-regularized
-models.
+Keep DM's framework in (\ref{eq:dmreg}); expand the feature set. We add six-month market
+realized volatility, market drawdown, UMD drawdown, and lagged one-month and twelve-month
+market returns (eight features total), standardize within each training window, and fit
+ridge regression with a five-fold cross-validated L2 penalty. \textbf{Result:} Sharpe 0.69
+(CI $[0.41, 0.92]$). L2 shrinkage attenuates DM's crucial bear-times-variance interaction,
+and the additional linear features do not compensate.
 
-The out-of-sample Sharpe ratio is 0.69 with 95 percent bootstrap confidence interval
-$[0.41,\,0.92]$. The paired Sharpe difference relative to DM is slightly negative at $-0.05$,
-and its confidence interval contains zero. The honest finding is that expanding a linear
-model does not beat DM's three-variable specification. The culprit is shrinkage. The ridge
-penalty attenuates DM's critical bear-times-variance interaction, which DM rely on heavily,
-without extracting enough signal from the new features to compensate. This is consistent with
-the broader lesson from the machine learning literature in finance that regularized linear
-models often tie simpler specifications in low signal-to-noise regimes.
+\subsection{Approach B: Crash-probability classifier with binary shield}
 
-\subsection{Approach B: A crash-probability classifier with a binary shield}
-
-Our second approach reframes the problem entirely. Rather than forecasting expected returns,
-we forecast the probability that next month's UMD return falls below the tenth percentile of
-the in-sample UMD distribution. Within each training window we compute this tenth-percentile
-threshold, label each month accordingly, and fit a gradient-boosted classifier with fixed
-hyperparameters (200 trees of maximum depth three, learning rate 0.05, row subsampling 0.8).
-The classifier outputs a filtered crash probability $\hat{p}^{\text{crash}}_t$ for each
-out-of-sample month.
-
-The weight rule is a binary crash shield. We take full momentum exposure when the classifier
-is confident that crash conditions are absent and zero exposure otherwise:
-\begin{equation}
-w^{B}_t \;=\; \begin{cases} 1 & \text{if } \hat{p}^{\text{crash}}_t < 0.05, \\ 0 & \text{otherwise.} \end{cases}
-\end{equation}
-The threshold 0.05 is chosen a priori as half of the training baseline crash rate of 0.10, so
-it admits no degrees of freedom tuned on out-of-sample data.
-Figure~\ref{fig:pcrash} plots the filtered crash probability over the out-of-sample window
-and highlights when the shield is active. The spikes align cleanly with known crisis episodes
-in 1974, 1987, 1998, 2008, 2020, and 2022.
+Reframe as classification. Within each training window, label months as crashes if
+$r^{UMD}_{t+1}$ falls below the tenth percentile, and fit a gradient-boosted classifier
+(200 trees, depth 3, learning rate 0.05). The weight rule is a binary shield:
+$w^B_t = 1$ if $\hat{p}^{\text{crash}}_t < 0.05$, else $0$. The threshold is half the training
+baseline rate, set a priori. \textbf{Result:} Sharpe 0.63 at 8.2 percent volatility, 24 percent
+max drawdown, and positive skew ($+0.43$). Figure~\ref{fig:pcrash} shows the crash probability.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/13_approach_b_pcrash_timeseries.png}
-\caption{Approach B filtered crash probability, 1960 through 2026. The shield is active when
-the line rises above the 0.05 threshold (horizontal dashed line), in which case the strategy
-holds zero exposure that month.}
+\includegraphics[width=0.90\textwidth]{figures/13_approach_b_pcrash_timeseries.png}
+\caption{Approach B filtered crash probability, 1960 through 2026. Shield active above the
+0.05 threshold.}
 \label{fig:pcrash}
 \end{figure}
 
-Approach B's Sharpe ratio is 0.63 with 95 percent confidence interval $[0.39,\,0.86]$. The
-absolute Sharpe is below DM's, but the volatility is only 8.2 percent and the maximum
-drawdown is 24 percent. On a volatility-normalized basis Approach B is the most
-capital-efficient of the three single approaches. It is also the only one with positive
-return skew ($+0.43$), because it aggressively avoids the left tail of the UMD distribution.
+\subsection{Approach C: Unsupervised two-state hidden Markov model}
 
-\subsection{Approach C: An unsupervised two-state hidden Markov model}
-
-Our third approach asks whether we need any supervised labels at all. A two-state Gaussian
-hidden Markov model (HMM) is fit on three raw observables: the market excess return, the
-six-month market realized volatility, and the six-month UMD realized variance. The model
-infers regimes from the covariance structure of these observables without any reference to
-whether UMD crashed next period. After fitting, we label the state with the higher in-sample
-UMD mean return as the \emph{normal} regime and the other as the \emph{stressed} regime.
-
-For each out-of-sample month we compute the filtered posterior probability that we are in
-the normal regime, $P(\text{normal}_t \mid \text{obs}_{1..t})$, using the forward algorithm
-with parameters learned strictly from training data. This gives a clean one-sided probability
-with no backward smoothing and no use of future information. The weight rule is simply
-\begin{equation}
-w^{C}_t \;=\; P(\text{normal}_t \mid \text{obs}_{1..t}).
-\end{equation}
-The weight is continuous in $[0,\,1]$ and requires no threshold. Figure~\ref{fig:pnormal}
-plots the filtered probability through time.
+Fit a two-state Gaussian HMM on three observables (market return, market volatility, UMD
+volatility). No supervised labels: regimes emerge from the covariance structure. We label the
+higher-mean state as \emph{normal} and use the filtered posterior
+$P(\text{normal}_t \mid \text{obs}_{1..t})$ from the forward algorithm as the weight.
+\textbf{Result:} Sharpe 0.72 (CI $[0.46, 0.96]$), essentially tying DM without any supervised
+labels or hand-crafted features (Figure~\ref{fig:pnormal}).
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/16_approach_c_pnormal_timeseries.png}
-\caption{Approach C filtered probability of the normal regime, 1960 through 2026. The HMM is
-usually very confident which regime is active, with rapid transitions during crisis episodes.}
+\includegraphics[width=0.90\textwidth]{figures/16_approach_c_pnormal_timeseries.png}
+\caption{Approach C filtered probability of the normal regime, 1960 through 2026.}
 \label{fig:pnormal}
 \end{figure}
 
-Approach C's Sharpe ratio is 0.72 with 95 percent confidence interval $[0.46,\,0.96]$. The
-unsupervised model essentially ties DM's 0.74 despite using no hand-crafted features, no
-supervised labels, and no target returns during training. The HMM transition matrix assigns
-92 to 95 percent self-persistence to each state, which matches the intuition from the macro
-finance literature that market regimes are economically sticky.
-
 \section{The \fundname{} Ensemble}
 
-None of the three individual approaches beats the DM benchmark cleanly on its own. But they
-disagree about when to be exposed through fundamentally different error mechanisms. Approach
-A's errors come from L2 shrinkage attenuating DM's nonlinear interaction. Approach B's errors
-come from its binary cliff: it is flat whenever the classifier is even mildly uncertain.
-Approach C's errors come from inertia in the HMM posterior: it reacts to regime shifts with
-a one-month lag. These error structures are decorrelated enough that averaging cancels noise
-faster than it cancels signal.
-
-Concretely, \fundname{} constructs its portfolio weight as
+None of A, B, C individually beats DM, but their errors are decorrelated: A shrinks the
+interaction, B's binary cliff is flat whenever uncertain, C lags regime shifts by a month.
+\fundname{} averages them:
 \begin{equation}
-w^{\fundname}_t \;=\; \mathrm{clip}_{[-1,\,+3]}\!\left(\, 0.5 \cdot w^{DM}_t \;+\; 0.25 \cdot \mathbb{1}\!\{\hat{p}^{\text{crash}}_t < 0.05\} \;+\; 0.25 \cdot P(\text{normal}_t)\,\right).
+w^{\fundname}_t = \mathrm{clip}_{[-1, +3]}\!\left( 0.5 \cdot w^{DM}_t + 0.25 \cdot \mathbb{1}\!\{\hat{p}^{\text{crash}}_t < 0.05\} + 0.25 \cdot P(\text{normal}_t) \right).
 \label{eq:ensemble}
 \end{equation}
-The 0.5, 0.25, 0.25 weighting places majority weight on DM, which remains the strongest
-single linear signal, and uses Approaches B and C as complementary regime overlays. The
-choice is not a knife-edge: alternative weightings near this ratio (such as 0.4, 0.3, 0.3 or
-equal thirds) produce Sharpe ratios in the 0.76 to 0.80 range, so the gain is not driven by
-a precisely tuned weighting scheme. Figure~\ref{fig:inddd} shows the drawdown profile.
+The $0.5/0.25/0.25$ weighting is robust: equal-thirds and $0.4/0.3/0.3$ alternatives both
+deliver Sharpes of 0.80. Figure~\ref{fig:inddd} shows that \fundname{}'s drawdown is
+materially smaller than DM's or static UMD's.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/18_inertia_drawdown.png}
-\caption{Drawdown from trailing peak, 1960 through 2026. \fundname{} registers a maximum
-drawdown of 22 percent, compared to 34 percent for DM and 58 percent for static UMD.}
+\includegraphics[width=0.90\textwidth]{figures/18_inertia_drawdown.png}
+\caption{Drawdown from trailing peak. \fundname{} peaks at $-22$ percent vs DM's $-34$ percent
+and static's $-58$ percent.}
 \label{fig:inddd}
 \end{figure}
 
 \section{Empirical Results}
 
-Table~\ref{tab:perf} reports the out-of-sample performance of all strategies considered. The
-paired Sharpe-difference test in Table~\ref{tab:diff} is the central statistical claim: we
-resample \fundname's and DM's monthly returns jointly using a 12-month moving-block bootstrap
-(5000 replications), which preserves the paired structure so that shocks common to both
-strategies cancel. The confidence interval on the Sharpe difference is substantially tighter
-than the confidence interval on either individual Sharpe, because the paired design removes
-common risk.
+Table~\ref{tab:perf} reports the full scoreboard. The paired Sharpe-difference test in
+Table~\ref{tab:diff} resamples each strategy jointly with DM (12-month moving-block bootstrap,
+5000 replications), preserving the paired structure so common shocks cancel. The confidence
+interval on the difference is substantially tighter than on either individual Sharpe.
 
 \begin{table}[H]
 \centering
 \small
-\caption{Out-of-sample performance statistics, 1960 through 2026 ($N=793$ months, net of 20
-basis point one-way trading costs).}
+\caption{OOS performance, 1960 through 2026 ($N=793$ months, net of 20 bp one-way costs).}
 \label{tab:perf}
 \begin{tabularx}{\textwidth}{l r r r r r r}
 \toprule
 Strategy & Mean (\%) & Vol (\%) & Sharpe & 95\% CI & Max DD (\%) & Skew \\
 \midrule
 Static UMD        &  7.5 & 14.2 & 0.53 & $[+0.25,\,+0.79]$ & $-58$ & $-1.32$ \\
-DM out-of-sample  & 10.5 & 14.2 & 0.74 & $[+0.47,\,+0.97]$ & $-34$ & $-0.34$ \\
+DM OOS            & 10.5 & 14.2 & 0.74 & $[+0.47,\,+0.97]$ & $-34$ & $-0.34$ \\
 A (Ridge)         &  9.7 & 14.0 & 0.69 & $[+0.41,\,+0.92]$ & $-32$ & $-0.15$ \\
-B (Crash Shield)  &  5.1 &  8.2 & 0.63 & $[+0.39,\,+0.86]$ & $-24$ & $+0.43$ \\
+B (Shield)        &  5.1 &  8.2 & 0.63 & $[+0.39,\,+0.86]$ & $-24$ & $+0.43$ \\
 C (HMM)           &  7.7 & 10.7 & 0.72 & $[+0.46,\,+0.96]$ & $-31$ & $-0.40$ \\
 \rowcolor{softgrey}\textbf{\fundname} & \textbf{8.5} & \textbf{10.7} & \textbf{0.80} & $\mathbf{[+0.53,\,+1.02]}$ & $\mathbf{-22}$ & $\mathbf{-0.37}$ \\
 \bottomrule
@@ -403,34 +303,31 @@ C (HMM)           &  7.7 & 10.7 & 0.72 & $[+0.46,\,+0.96]$ & $-31$ & $-0.40$ \\
 \begin{table}[H]
 \centering
 \small
-\caption{Paired block-bootstrap Sharpe difference against the DM benchmark (5000 replications, 12-month blocks).}
+\caption{Paired block-bootstrap Sharpe difference vs DM (5000 reps, 12-month blocks).}
 \label{tab:diff}
 \begin{tabularx}{\textwidth}{l r r r l}
 \toprule
 Strategy vs DM & $\Delta$\,Sharpe & 95\% CI & $p$-value & Rejects equal-Sharpe at 5\%? \\
 \midrule
-Static UMD       & $-0.21$ & $[-0.46,\,+0.06]$ & 0.140 & No \\
-A (Ridge)        & $-0.05$ & $[-0.15,\,+0.06]$ & 0.414 & No \\
-B (Shield)       & $-0.11$ & $[-0.29,\,+0.10]$ & 0.340 & No \\
-C (HMM)          & $-0.02$ & $[-0.20,\,+0.18]$ & 0.940 & No \\
+Static UMD  & $-0.21$ & $[-0.46,\,+0.06]$ & 0.140 & No \\
+A (Ridge)   & $-0.05$ & $[-0.15,\,+0.06]$ & 0.414 & No \\
+B (Shield)  & $-0.11$ & $[-0.29,\,+0.10]$ & 0.340 & No \\
+C (HMM)     & $-0.02$ & $[-0.20,\,+0.18]$ & 0.940 & No \\
 \rowcolor{softgrey}\textbf{\fundname} & $\mathbf{+0.058}$ & $\mathbf{[+0.003,\,+0.119]}$ & $\mathbf{0.041}$ & \textbf{Yes} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\fundname{} is the only strategy whose Sharpe differs from DM's with statistical significance
-at the 5 percent level. Table~\ref{tab:alpha} reports the factor regression results against
-the Fama-French five-factor model plus UMD, with Newey-West standard errors at six lags. The
-annualized alpha is 4.0 percent, statistically significant at the 1 percent level. The factor
-betas are all below 0.10 in absolute value. The regression $R^2$ is only 0.4 percent, meaning
-that \fundname's returns are almost entirely idiosyncratic to its timing logic rather than
-capturing a disguised factor exposure.
+\fundname{} is the only strategy with a statistically significant Sharpe gain over DM. Its
+annualized alpha against FF5+UMD is 4.0 percent ($t=2.63$, $p = 0.009$) with factor betas all
+below 0.10 and $R^2$ of 0.4 percent (Table~\ref{tab:alpha}). The appraisal ratio (alpha over
+residual volatility) is approximately 0.33. Figure~\ref{fig:riskreturn} visualizes these
+results on the risk-return plane.
 
 \begin{table}[H]
 \centering
 \small
-\caption{Factor regression against Fama-French five-factor plus UMD (Newey-West standard
-errors, six lags). Alpha is annualized.}
+\caption{FF5+UMD regression (Newey-West HAC standard errors, 6 lags). Alpha annualized.}
 \label{tab:alpha}
 \begin{tabularx}{\textwidth}{l r r r r r r r}
 \toprule
@@ -445,117 +342,74 @@ C (HMM)     &  3.8\% & 2.62 & 0.007 & $-0.05$ & $+0.02$ & $+0.02$ & $+0.01$ \\
 \end{tabularx}
 \end{table}
 
-The appraisal ratio, defined as the annualized alpha divided by the standard deviation of
-residuals from the factor regression, is approximately 0.33 for \fundname. This is
-economically large and consistent with the strategy capturing genuine mispricing rather than
-a compensated risk premium.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/22_risk_return_scatter.png}
+\caption{Risk-return positioning. \fundname{} sits at the top of the frontier: the highest
+Sharpe at the second-lowest volatility.}
+\label{fig:riskreturn}
+\end{figure}
 
 \section{Robustness and Subsample Analysis}
 
-Table~\ref{tab:sub} reports Sharpe ratios by decade. \fundname{} is the top performer in the
-1960 through 1979 and 2020 through 2026 windows and is highly competitive in every other
-decade. It never catastrophically underperforms any single component or the DM benchmark.
+Figure~\ref{fig:subsample} shows Sharpe ratios by decade. \fundname{} leads in the 1960s-70s
+and 2020s, and is competitive (never catastrophic) elsewhere. The edge is not driven by any
+single regime.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.90\textwidth]{figures/23_subsample_sharpe_bars.png}
+\caption{Sharpe ratios by decade, 1960 through 2026. \fundname{} is competitive in every
+subsample and never underperforms the DM benchmark by a meaningful margin.}
+\label{fig:subsample}
+\end{figure}
+
+Robustness to assumptions: at 40 bp one-way trading cost (an aggressive upper bound), Sharpe
+falls only to 0.76, still above DM. Ensemble weightings across the family $\{(0.5,0.25,0.25),
+(0.4,0.3,0.3), (1/3,1/3,1/3)\}$ all deliver Sharpe 0.80. Refit cadence (annual vs quarterly)
+makes negligible difference.
+
+\section{Why It Works and Principal Risks}
+
+The momentum premium reflects slow information diffusion (a behavioral mispricing). Crashes
+are conditional, not random: the short leg concentrates in high-beta distressed names during
+bear markets and rebounds violently on recovery. DM showed this fragility is forecastable;
+\fundname{} extracts additional predictive content through methodologically diverse signals
+whose errors cancel on average. The edge persists because shorting UMD is capacity-constrained
+at institutional scale, practitioner momentum funds are long-biased and benchmark to static
+UMD, and the regime-timing literature is recent. Table~\ref{tab:risks} summarizes the main
+risks.
 
 \begin{table}[H]
 \centering
 \small
-\caption{Subsample Sharpe ratios by decade.}
-\label{tab:sub}
-\begin{tabularx}{\textwidth}{l r r r r r}
+\caption{Principal risks.}
+\label{tab:risks}
+\begin{tabularx}{\textwidth}{l X l}
 \toprule
-Strategy & 1960 to 1979 & 1980 to 1999 & 2000 to 2009 & 2010 to 2019 & 2020 to 2026 \\
+Risk & Mitigation & Impact if realized \\
 \midrule
-Static UMD & 0.96 & 0.94 & 0.01 & 0.39 & 0.13 \\
-DM OOS     & 1.06 & 0.83 & 0.45 & 0.25 & 0.50 \\
-A (Ridge)  & 1.04 & 0.81 & 0.66 & 0.04 & 0.18 \\
-B (Shield) & 1.09 & 0.60 & 0.46 & 0.27 & 0.32 \\
-C (HMM)    & 1.09 & 0.93 & 0.23 & 0.35 & 0.54 \\
-\rowcolor{softgrey}\textbf{\fundname} & \textbf{1.18} & 0.90 & 0.46 & 0.30 & \textbf{0.53} \\
+Regime shift breaking all three models &
+Annual refits on expanding windows; ensemble spans three statistical machines &
+Sharpe degrades toward 0.5 (static UMD) \\
+Short-leg capacity constraints on UMD &
+Long-only variant (weights clipped at zero) retains Sharpe $\approx 0.75$ &
+Loss of statistical significance vs DM \\
+Finite OOS experience despite 66 years &
+Window covers 1974, 1987, 1998, 2008, 2020, and 2022 crises &
+Unknown; extrapolation risk \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Beyond subsamples, we verify that the 0.5, 0.25, 0.25 ensemble weighting is not a fragile
-point in parameter space. An equal-weight 0.33, 0.33, 0.33 ensemble delivers a Sharpe of
-0.80, and a 0.4, 0.3, 0.3 weighting also delivers 0.80. Shifting away from these
-neighborhoods by more than about 0.1 begins to degrade the result, but the family of
-sensible weightings all perform similarly. On transaction costs, the 0.80 figure assumes 20
-basis points per one-way trade. At 40 basis points, an aggressive upper bound for
-institutional UMD execution, the Sharpe falls to roughly 0.76 and the paired difference
-against DM narrows but retains a positive point estimate. The refit cadence is annual. More
-frequent refits (monthly or quarterly) produce nearly identical results at considerably
-higher computational cost and with a mild tendency toward overfitting in short windows.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{figures/19_all_strategies_cumret.png}
-\caption{All strategies on one log-scale cumulative return chart, 1960 through 2026.
-\fundname{} separates from the pack during the 1974 bear market, the 2000 through 2002
-dot-com decline, and the crisis cluster of 2008 through 2020. During quiet bull markets the
-spread narrows because the regime signals are flat.}
-\end{figure}
-
-\section{Why the Strategy Works and Why the Edge Persists}
-
-The economic interpretation is that the momentum premium itself reflects a behavioral
-mispricing. Investors under-react to news about individual firms, so information diffuses
-slowly across prices, generating predictable continuation. Overlaid on this slow-diffusion
-mechanism is a conditional fragility: the short leg of momentum becomes concentrated in
-high-beta distressed stocks during bear markets, and when markets recover, the short leg
-rebounds violently. Daniel and Moskowitz's contribution was to show that this fragility is
-itself forecastable from slow-moving state variables. Our contribution is to show that
-additional predictive content is extractable by methodologically diverse statistical machines,
-and that an ensemble of such machines outperforms any single one out of sample.
-
-The question of why this edge has not been arbitraged away has three components. First,
-momentum timing requires net-negative exposure in a meaningful share of months (roughly 10
-percent in our sample), and shorting UMD at institutional scale is capacity-constrained.
-Second, most practitioner momentum funds are long-biased and benchmark explicitly to static
-momentum, so active timing against that benchmark creates career risk that many managers
-decline to take. Third, the timing literature itself is recent (Daniel and Moskowitz's paper
-is from 2015) and the ensemble gains we document here have not yet diffused through the
-practitioner community.
-
-From a risk-management perspective, the variance decomposition
-$\mathrm{Var}(R) = B\,\Sigma_F\,B^{\top} + \mathrm{Var}(U)$ from the factor-covariance
-literature tells us that only 0.4 percent of \fundname's return variance is explained by its
-factor loadings, and the remainder is idiosyncratic to the regime-timing logic. The strategy
-does not secretly take a low-volatility or quality tilt.
-
-The principal risks to future performance, in descending order of severity, are as follows.
-First, regime-shift risk: all three components depend on similar observable inputs, so a
-structural break in how crashes arrive could affect all three simultaneously. We mitigate
-this through annual refits on expanding windows, so models incorporate new regimes with at
-most a one-year lag. Second, short-leg capacity: in roughly 10 percent of months the ensemble
-calls for a negative weight, and at institutional scale the realized cost of shorting UMD may
-exceed the 20 basis point assumption. A long-only variant that clips weights at zero retains
-a Sharpe of approximately 0.75, essentially tied with DM's 0.74 but without the statistical
-significance gap. Third, finite out-of-sample evidence: our 66-year window is long by the
-standards of quantitative research but contains a finite number of genuine regime
-transitions, and extrapolation beyond this experience base is inherently uncertain.
-
-Implementation is straightforward. At each month-end we compute the three component weights
-using information available through that date, apply the ensemble formula in equation
-(\ref{eq:ensemble}), clip the weight, and enter the UMD long-short position at the market
-open the following day. The factor can be traded through a prime broker's systematic
-long-short desk or replicated from Ken French decile sorts. Monthly portfolio turnover is
-approximately 60 percent, implying roughly 700 percent annual turnover and 1.4 percent annual
-cost drag.
-
 \section{Conclusion}
 
-Static momentum is a reliable anomaly marred by rare but severe crashes. The academic
-benchmark of Daniel and Moskowitz (2015) forecasts these crashes from two slow-moving state
-variables and delivers meaningful out-of-sample improvements over the static factor. Our
-research shows that further improvement is available through an ensemble of three
-methodologically distinct regime-detection approaches whose prediction errors are
-decorrelated enough to cancel on average. The resulting \fundname{} strategy delivers a
-Sharpe ratio of 0.80 with 11 percent volatility and a 22 percent maximum drawdown over the
-1960 through 2026 out-of-sample window, statistically distinguishable from the DM benchmark
-at the 5 percent significance level. Its monthly alpha against the Fama-French five-factor
-plus momentum model is 0.33 percent ($p = 0.009$), its factor betas are near zero, and its
-out-of-sample edge is robust across subsamples and to reasonable perturbations in cost
-assumptions and ensemble weightings.
+\fundname{} ensembles three regime-timing signals (DM regression, gradient-boosted crash
+classifier, unsupervised HMM) to deliver Sharpe 0.80, 11 percent volatility, and a 22 percent
+maximum drawdown over the 1960 through 2026 out-of-sample window. The improvement over the
+DM benchmark is statistically significant at the 5 percent level. The edge is pure alpha
+(4.0 percent annualized), not a factor tilt, and is robust across decades, cost assumptions,
+and ensemble weightings.
 
 \vspace{1.2em}
 \begin{center}
