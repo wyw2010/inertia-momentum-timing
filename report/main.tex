@@ -385,21 +385,25 @@ risks.
 \small
 \caption{Principal risks.}
 \label{tab:risks}
-\begin{tabularx}{\textwidth}{l X l}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.26\textwidth}
+                  >{\raggedright\arraybackslash}p{0.44\textwidth}
+                  >{\raggedright\arraybackslash}p{0.26\textwidth}@{}}
 \toprule
 Risk & Mitigation & Impact if realized \\
 \midrule
 Regime shift breaking all three models &
 Annual refits on expanding windows; ensemble spans three statistical machines &
 Sharpe degrades toward 0.5 (static UMD) \\
+\addlinespace[3pt]
 Short-leg capacity constraints on UMD &
 Long-only variant (weights clipped at zero) retains Sharpe $\approx 0.75$ &
 Loss of statistical significance vs DM \\
+\addlinespace[3pt]
 Finite OOS experience despite 66 years &
 Window covers 1974, 1987, 1998, 2008, 2020, and 2022 crises &
 Unknown; extrapolation risk \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 \section{Conclusion}
