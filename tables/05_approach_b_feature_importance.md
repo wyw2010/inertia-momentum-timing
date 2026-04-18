@@ -1,0 +1,10 @@
+| feature     |   importance |
+|:------------|-------------:|
+| mkt_ret_12m |       0.2716 |
+| mom_var6    |       0.1508 |
+| mkt_ret_1m  |       0.1452 |
+| mkt_vol6    |       0.1323 |
+| umd_dd      |       0.1278 |
+| mkt_dd      |       0.1037 |
+| bear_x_var  |       0.0660 |
+| bear        |       0.0026 |
