@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Data — keep small cached CSVs, ignore large pulls
+data/raw/*.parquet
+data/raw/*.feather
+data/processed/*.parquet
+*.zip
+
+# Outputs
+figures/*.pdf
+!figures/.gitkeep
+# Keep PNG figures for GitHub rendering
+# figures/*.png
+
+# Secrets
+.env
+*.key
+
+# Jupyter notebook outputs — decide later whether to commit
+# *.ipynb
