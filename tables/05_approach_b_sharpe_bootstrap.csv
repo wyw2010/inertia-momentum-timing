@@ -1,5 +1,5 @@
 ,sharpe,ci_low,ci_high
-Static UMD,0.1234,-0.2723,0.5096
-DM OOS (net),0.3696,0.0330,0.6387
-Approach B linear,0.1435,-0.2657,0.5362
-Approach B shield,0.3589,0.0205,0.7167
+Static UMD,0.5255,0.2466,0.7944
+DM OOS (net),0.7383,0.4667,0.9701
+Approach B linear,0.5564,0.2732,0.8324
+Approach B shield,0.6268,0.3899,0.8560
