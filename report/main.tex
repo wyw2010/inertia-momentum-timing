@@ -77,93 +77,73 @@
 %                TITLE / ABSTRACT / EXEC SUMMARY (PAGE 1)
 % ============================================================
 \thispagestyle{empty}
+
+% ---- Title block (compact) ----
 \begin{center}
-    {\Large\bfseries Can We Time Momentum?}\\[6pt]
-    {\large A Conditional Timing Strategy for the Equity Momentum Factor}\\[14pt]
-    {\normalsize [Principal 1]\quad and\quad [Principal 2]}\\[4pt]
-    {\small UG54 Data Driven Investing\, \textbullet\, Spring 2026}\\[2pt]
-    {\small Investment vehicle: \textbf{\fundname}\, \textbullet\, Topic dimension: Timing Strategies}\\[6pt]
-    {\color{primarypurple}\rule{0.55\textwidth}{0.6pt}}
+    {\Large\bfseries Can We Time Momentum?}\\[3pt]
+    {\normalsize\itshape A Conditional Timing Strategy for the Equity Momentum Factor}\\[8pt]
+    {\small [Principal 1]\, and\, [Principal 2] \;\textbullet\; UG54 Data Driven Investing, Spring 2026}\\[1pt]
+    {\small Investment vehicle: \textbf{\fundname} \;\textbullet\; Topic: Timing Strategies}\\[5pt]
+    {\color{primarypurple}\rule{0.55\textwidth}{0.5pt}}
 \end{center}
 
-\vspace{0.3em}
-
-\begin{center}
-\begin{minipage}{0.90\textwidth}
-\small
-\textbf{Abstract.} The momentum premium is one of the most reliable anomalies in equity
-markets, yet it suffers rare catastrophic crashes that can wipe out a decade of compounding in
-weeks. This paper develops a conditional timing strategy that diagnoses crash states in real
-time and scales momentum exposure accordingly. We test three methodologically orthogonal
-regime-detection approaches: a linear predictive regression, a gradient-boosted crash
-classifier, and an unsupervised two-state hidden Markov model. While no single approach beats
-the Daniel and Moskowitz (2015) academic benchmark out of sample, an equal-error ensemble of
-all three does. Over a 66-year out-of-sample window from 1960 to 2026, the ensemble (which we
-call \fundname) delivers an annualized Sharpe ratio of 0.80 against the benchmark's 0.74, with
-25 percent less volatility, 35 percent less maximum drawdown, and 4.0 percent annualized alpha
-against the Fama-French five-factor plus momentum model. A paired block-bootstrap test rejects
-the null of equal Sharpe at the 5 percent significance level.
-\end{minipage}
-\end{center}
-
-\vspace{0.2em}
-\begin{center}{\color{primarypurple}\rule{0.55\textwidth}{0.3pt}}\end{center}
-\vspace{-0.2em}
-
+% ---- Key finding chart (vol-matched so comparison is apples-to-apples) ----
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/17_inertia_cumret.png}
-\captionsetup{font=footnotesize}
-\caption{Cumulative growth of one dollar invested in each strategy, 1960 through 2026, net of
-20 basis point one-way trading costs, log scale. The \fundname{} ensemble (purple) compounds
-at a materially higher rate than the Daniel and Moskowitz out-of-sample benchmark (grey) and
-static momentum.}
+\includegraphics[width=0.85\textwidth]{figures/21_inertia_volmatched_cumret.png}
+\captionsetup{font=footnotesize,skip=2pt}
+\caption{Cumulative return, 1960 through 2026, at equal 14 percent annualized volatility
+(vol-matched comparison). At the same risk budget, \fundname{} compounds to \$802, DM OOS to
+\$471, and static UMD to \$65 per dollar invested.}
 \end{figure}
 
-\section*{Executive Summary}
+\vspace{-0.4em}
+{\color{primarypurple}\hrule height 0.3pt}
+\vspace{0.2em}
 
-Momentum is the most reliable equity anomaly in history, but rare crash states wipe out a
-decade of compounding in weeks. \fundname{} diagnoses those states in real time and cuts
-exposure, turning static momentum into a conditionally-managed strategy with materially
-better risk-adjusted returns. The raw momentum premium is widely argued to be a behavioral
-mispricing driven by under-reaction and slow information diffusion, as documented in
-Jegadeesh and Titman (1993) and Daniel and Titman (1997). We have identified a specific,
-diagnosable tail risk (the crash state) and a timing strategy that detects these regime
-changes before they reverse.
+\noindent\textbf{\large Executive Summary}
+\vspace{-0.2em}
 
-Operationally, \fundname{} holds the Ken French up-minus-down (UMD) momentum portfolio and
-rescales its exposure each month using an ensemble of three regime signals constructed from
-the same raw data but through methodologically distinct statistical machines. The first is a
-predictive regression in the spirit of Daniel and Moskowitz (2015), which forecasts
-conditional mean and variance. The second is a gradient-boosted classifier that estimates the
-probability of a crash next month. The third is an unsupervised two-state hidden Markov model
-whose filtered regime probability becomes a direct scaling factor. The ensemble places 50
-percent weight on the predictive regression and 25 percent on each regime detector.
+\textbf{Strategy.} Momentum is the most reliable equity anomaly in history, but rare
+\emph{crash states} wipe out a decade of compounding in weeks. \fundname{} diagnoses those
+states in real time and scales momentum exposure down (or short) during them, using an
+ensemble of three regime signals: a predictive regression, a gradient-boosted crash
+classifier, and an unsupervised hidden Markov regime detector. Majority ensemble weight (50
+percent) sits on the regression; 25 percent on each overlay.
 
-Relative to alternatives, \fundname{} solves the central flaw of static momentum without
-giving up its long-run compounding. Static UMD has an out-of-sample Sharpe ratio of 0.53 since
-1960 but suffers three drawdowns deeper than 40 percent and a peak drawdown of 58 percent.
-The Daniel and Moskowitz benchmark improves to 0.74 at roughly the same volatility.
-\fundname{} achieves 0.80 at three-quarters of that volatility and two-thirds of that
-drawdown. A paired block-bootstrap on the Sharpe difference returns a 95 percent confidence
-interval of $[+0.003,\,+0.119]$ with a $p$-value of 0.041, rejecting the null that
-\fundname{} and the benchmark have equal Sharpe.
+\textbf{Why it beats alternatives.} Static UMD earned a long-run Sharpe of 0.53 but suffered
+three crashes exceeding 40 percent. The Daniel and Moskowitz (2015) benchmark (DM) improved
+this to 0.74 at the same volatility. \fundname{} reaches 0.80 at three-quarters the volatility
+and two-thirds the drawdown. A paired block-bootstrap on the Sharpe difference rejects equality
+with DM at the 5 percent level ($p = 0.041$).
 
-The strategy delivers alpha rather than compensation for risk. Regressing monthly net returns
-on the five Fama-French factors plus UMD, the monthly alpha is 0.33 percent (4.0 percent
-annualized) with a heteroskedasticity-and-autocorrelation-consistent (HAC) $t$-statistic of
-2.63 ($p = 0.009$). The factor betas are jointly small (all below 0.10 in absolute value),
-and the regression $R^2$ is only 0.4 percent. The source of the edge is a behavioral
-mispricing in the underlying momentum factor combined with conditional risk management
-around its predictable crash states.
+\textbf{Alpha, not compensation for risk.} Regressed on the Fama-French five-factor model plus
+UMD with HAC standard errors, monthly alpha is 0.33 percent (4.0 percent annualized, $t =
+2.63$). Factor betas are all below 0.10 in absolute value and the regression $R^2$ is 0.4
+percent. The edge is a behavioral mispricing (slow information diffusion) combined with
+conditional risk management at the predictable moments when the momentum short-leg concentrates
+in distressed high-beta names that are about to rebound.
 
-The main costs are modest. Monthly turnover is approximately 60 percent, which at 20 basis
-points per one-way trade translates to under 1.5 percent annual drag. The main risks are
-threefold: a structural regime shift that breaks all three component models simultaneously,
-capacity limits on the short leg of UMD at institutional scale, and finite out-of-sample
-evidence despite the long 66-year window. The strategy performs best when regime signals are
-active, typically around crisis inflection points such as 1974, 2008, and 2020. It
-underperforms in prolonged quiet bull markets where the signals remain flat.
+\textbf{Costs and main risks.} Turnover is roughly 60 percent monthly, implying under 1.5
+percent annual cost drag at 20 basis points per one-way trade. The three principal risks are
+(i) a structural regime shift that breaks all three models at once, (ii) short-leg capacity
+limits on UMD at institutional scale, and (iii) finite out-of-sample experience despite the
+66-year window.
+
+\vspace{0.3em}
+\begin{center}
+\footnotesize
+\begin{tabularx}{0.95\textwidth}{l r r r r r r}
+\toprule
+\textbf{Performance} & Mean (\%) & Vol (\%) & Sharpe & Alpha (ann.) & Max DD & When it wins \\
+\midrule
+Static UMD    &  7.5 & 14.2 & 0.53 & n/a            & $-58\%$ & Quiet bull markets \\
+DM OOS benchmark & 10.5 & 14.2 & 0.74 & 5.6\% ($t=2.7$) & $-34\%$ & General-purpose \\
+\rowcolor{softgrey}
+\textbf{\fundname{}} & \textbf{8.5} & \textbf{10.7} & \textbf{0.80} & \textbf{4.0\%} (\textbf{\textit{t}=2.6}) & $\mathbf{-22\%}$ & \textbf{Crisis inflection points (1974, 2008, 2020)} \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
 % ============================================================
 %                       PROSPECTUS
