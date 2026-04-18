@@ -50,10 +50,10 @@
 \titlespacing*{\section}{0pt}{1.2em}{0.4em}
 \titlespacing*{\subsection}{0pt}{0.9em}{0.3em}
 
-\setlength{\parskip}{0.35em}
+\setlength{\parskip}{0.3em}
 \setlength{\parindent}{0pt}
 
-\renewcommand{\arraystretch}{1.15}
+\renewcommand{\arraystretch}{1.1}
 
 % ===================== PAGE HEADER =====================
 \pagestyle{fancy}
@@ -80,71 +80,65 @@
 
 % ---- Title block (compact) ----
 \begin{center}
-    {\Huge\bfseries\color{primarypurple} Inertia}\\[5pt]
-    {\normalsize\itshape A Conditional Timing Strategy for the Momentum Factor}\\[10pt]
-    {\small Will Wu and Kathy Yang}\\[2pt]
-    {\small UG54 Data Driven Investing \;\textbullet\; Spring 2026}\\[2pt]
-    {\small Topic dimension: Timing Strategies; Factor Investing; Machine Learning}\\[6pt]
-    {\color{primarypurple}\rule{0.55\textwidth}{0.5pt}}
+    {\LARGE\bfseries\color{primarypurple} Inertia}\\[3pt]
+    {\small\itshape A Conditional Timing Strategy for the Momentum Factor}\\[6pt]
+    {\footnotesize Will Wu and Kathy Yang \;\textbullet\; UG54 Data Driven Investing, Spring 2026}\\[1pt]
+    {\footnotesize Topic dimension: Timing Strategies; Factor Investing; Machine Learning}\\[4pt]
+    {\color{primarypurple}\rule{0.5\textwidth}{0.4pt}}
 \end{center}
 
-% ---- Key finding chart (vol-matched so comparison is apples-to-apples) ----
+% ---- Vol-matched headline chart ----
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/21_inertia_volmatched_cumret.png}
+\includegraphics[width=0.80\textwidth]{figures/21_inertia_volmatched_cumret.png}
 \captionsetup{font=footnotesize,skip=2pt}
-\caption{Cumulative return, 1960 through 2026, at equal 14 percent annualized volatility
-(vol-matched comparison). At the same risk budget, \fundname{} compounds to \$802, DM OOS to
-\$471, and static UMD to \$65 per dollar invested.}
+\caption{Cumulative return, 1960 through 2026, at equal 14 percent annual volatility
+(vol-matched). At the same risk budget \fundname{} compounds to \$802, DM to \$471, static
+UMD to \$65 per dollar invested.}
 \end{figure}
 
-\vspace{-0.4em}
+\vspace{-0.5em}
 {\color{primarypurple}\hrule height 0.3pt}
-\vspace{0.2em}
+\vspace{0.1em}
 
-\noindent\textbf{\large Executive Summary}
-\vspace{-0.2em}
+\noindent\textbf{Executive Summary}\vspace{-0.35em}
 
 \textbf{Strategy.} Momentum is the most reliable equity anomaly in history, but rare
-\emph{crash states} wipe out a decade of compounding in weeks. \fundname{} diagnoses those
-states in real time and scales momentum exposure down (or short) during them, using an
-ensemble of three regime signals: a predictive regression, a gradient-boosted crash
-classifier, and an unsupervised hidden Markov regime detector. Majority ensemble weight (50
-percent) sits on the regression; 25 percent on each overlay.
+\emph{crash states} wipe out a decade of compounding in weeks. \fundname{} cuts exposure
+during these states using an ensemble of three regime signals: a predictive regression (50
+percent weight), a gradient-boosted crash classifier (25 percent), and an unsupervised hidden
+Markov regime detector (25 percent).
 
-\textbf{Why it beats alternatives.} Static UMD earned a long-run Sharpe of 0.53 but suffered
-three crashes exceeding 40 percent. The Daniel and Moskowitz (2015) benchmark (DM) improved
-this to 0.74 at the same volatility. \fundname{} reaches 0.80 at three-quarters the volatility
-and two-thirds the drawdown. A paired block-bootstrap on the Sharpe difference rejects equality
-with DM at the 5 percent level ($p = 0.041$).
+\textbf{Why it beats alternatives.} Static UMD had Sharpe 0.53 with three 40+ percent crashes.
+The Daniel and Moskowitz (2015) benchmark (DM) lifted this to 0.74. \fundname{} reaches 0.80
+at three-quarters the volatility and two-thirds the drawdown, distinguishable from DM at 5
+percent (paired bootstrap $p = 0.041$).
 
-\textbf{Alpha, not compensation for risk.} Regressed on the Fama-French five-factor model plus
-UMD with HAC standard errors, monthly alpha is 0.33 percent (4.0 percent annualized, $t =
-2.63$). Factor betas are all below 0.10 in absolute value and the regression $R^2$ is 0.4
-percent. The edge is a behavioral mispricing (slow information diffusion) combined with
-conditional risk management at the predictable moments when the momentum short-leg concentrates
-in distressed high-beta names that are about to rebound.
+\textbf{Alpha, not compensation for risk.} Monthly alpha against Fama-French five-factor plus
+UMD (HAC) is 0.33 percent, or 4.0 percent annualized ($t = 2.63$). All factor betas are below
+0.10 and $R^2$ is 0.4 percent: the edge is pure alpha, not a factor tilt. Economic source:
+behavioral mispricing combined with conditional management of momentum's structural crash
+mechanism.
 
-\textbf{Costs and main risks.} Turnover is roughly 60 percent monthly, implying under 1.5
-percent annual cost drag at 20 basis points per one-way trade. The three principal risks are
-(i) a structural regime shift that breaks all three models at once, (ii) short-leg capacity
-limits on UMD at institutional scale, and (iii) finite out-of-sample experience despite the
-66-year window.
+\textbf{Costs and main risks.} Monthly turnover around 60 percent, under 1.5 percent annual
+drag at 20 basis points. Principal risks: a regime shift breaking all three models at once,
+short-leg capacity limits on UMD at scale, and finite out-of-sample evidence despite 66 years.
 
-\vspace{0.3em}
+\vspace{0.1em}
+{\renewcommand{\arraystretch}{0.95}
 \begin{center}
 \footnotesize
 \begin{tabularx}{0.95\textwidth}{l r r r r r r}
 \toprule
 \textbf{Performance} & Mean (\%) & Vol (\%) & Sharpe & Alpha (ann.) & Max DD & When it wins \\
 \midrule
-Static UMD    &  7.5 & 14.2 & 0.53 & n/a            & $-58\%$ & Quiet bull markets \\
-DM OOS benchmark & 10.5 & 14.2 & 0.74 & 5.6\% ($t=2.7$) & $-34\%$ & General-purpose \\
+Static UMD    &  7.5 & 14.2 & 0.53 & n/a  & $-58\%$ & Quiet bull markets \\
+DM Benchmark  & 10.5 & 14.2 & 0.74 & 5.6\% & $-34\%$ & General-purpose \\
 \rowcolor{softgrey}
-\textbf{\fundname{}} & \textbf{8.5} & \textbf{10.7} & \textbf{0.80} & \textbf{4.0\%} (\textbf{\textit{t}=2.6}) & $\mathbf{-22\%}$ & \textbf{Crisis inflection points (1974, 2008, 2020)} \\
+\textbf{\fundname{}} & \textbf{8.5} & \textbf{10.7} & \textbf{0.80} & \textbf{4.0\%} & $\mathbf{-22\%}$ & \textbf{Inflection Points} \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{center}}
 
 % ============================================================
 %                       PROSPECTUS
