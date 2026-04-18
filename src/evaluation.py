@@ -51,6 +51,60 @@ def perf_table(returns_dict: dict[str, pd.Series]) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 # Sharpe with block-bootstrap CI
 # ---------------------------------------------------------------------------
+def sharpe_diff_ci(
+    r_strategy: pd.Series,
+    r_benchmark: pd.Series,
+    n_boot: int = 2000,
+    block_size: int = 12,
+    seed: int = 42,
+    alpha: float = 0.05,
+) -> dict:
+    """
+    Paired block-bootstrap CI for the DIFFERENCE in annualized Sharpe
+    between strategy and benchmark. Preserves the paired structure
+    (same resampled months for both series), so common shocks cancel
+    and the CI is much tighter than the individual Sharpe CIs.
+
+    H0: SR(strategy) - SR(benchmark) = 0. Reject at 5% if CI excludes 0.
+
+    Returns dict with keys:
+        diff, ci_low, ci_high, n_boot, p_value
+    """
+    joint = pd.concat([r_strategy, r_benchmark], axis=1).dropna()
+    joint.columns = ["s", "b"]
+    arr = joint.values
+    n = len(arr)
+    if n < block_size * 2:
+        return {"diff": np.nan, "ci_low": np.nan, "ci_high": np.nan,
+                "n_boot": 0, "p_value": np.nan}
+
+    def _sr(x):
+        m, s = x.mean(), x.std(ddof=1)
+        return np.nan if s <= 0 else (m * 12) / (s * np.sqrt(12))
+
+    point = _sr(arr[:, 0]) - _sr(arr[:, 1])
+
+    rng = np.random.default_rng(seed)
+    n_blocks = int(np.ceil(n / block_size))
+    starts = np.arange(n - block_size + 1)
+
+    diffs = np.empty(n_boot)
+    for b in range(n_boot):
+        chosen = rng.choice(starts, size=n_blocks, replace=True)
+        rows = np.concatenate([arr[s : s + block_size] for s in chosen])[:n]
+        diffs[b] = _sr(rows[:, 0]) - _sr(rows[:, 1])
+
+    lo, hi = np.nanpercentile(diffs, [100 * alpha / 2, 100 * (1 - alpha / 2)])
+    p_one_sided = float((diffs <= 0).mean())          # P(diff <= 0 under resampling)
+    return {
+        "diff":     point,
+        "ci_low":   lo,
+        "ci_high":  hi,
+        "n_boot":   n_boot,
+        "p_value":  min(2 * p_one_sided, 2 * (1 - p_one_sided)),  # two-sided
+    }
+
+
 def sharpe_bootstrap_ci(
     r: pd.Series,
     n_boot: int = 2000,
