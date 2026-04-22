@@ -317,7 +317,7 @@ interval on the difference is substantially tighter than on either individual Sh
 \small
 \caption{OOS performance, 1960 through 2026 ($N=793$ months, net of 20 bp one-way costs).}
 \label{tab:perf}
-\begin{tabularx}{\textwidth}{l r r r r r r}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l r r r r r r}
 \toprule
 Strategy & Mean (\%) & Vol (\%) & Sharpe & 95\% CI & Max DD (\%) & Skew \\
 \midrule
@@ -328,7 +328,7 @@ B (Shield)        &  5.1 &  8.2 & 0.63 & $[+0.39,\,+0.86]$ & $-24$ & $+0.43$ \\
 C (HMM)           &  7.7 & 10.7 & 0.72 & $[+0.46,\,+0.96]$ & $-31$ & $-0.40$ \\
 \rowcolor{softgrey}\textbf{\fundname} & \textbf{8.5} & \textbf{10.7} & \textbf{0.80} & $\mathbf{[+0.53,\,+1.02]}$ & $\mathbf{-22}$ & $\mathbf{-0.37}$ \\
 \bottomrule
-\end{tabularx}
+\end{tabular*}
 \end{table}
 
 \begin{table}[H]
@@ -336,7 +336,7 @@ C (HMM)           &  7.7 & 10.7 & 0.72 & $[+0.46,\,+0.96]$ & $-31$ & $-0.40$ \\
 \small
 \caption{Paired block-bootstrap Sharpe difference vs DM (5000 reps, 12-month blocks).}
 \label{tab:diff}
-\begin{tabularx}{\textwidth}{l r r r l}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l r r r l}
 \toprule
 Strategy vs DM & $\Delta$\,Sharpe & 95\% CI & $p$-value & Rejects equal-Sharpe at 5\%? \\
 \midrule
@@ -346,7 +346,7 @@ B (Shield)  & $-0.11$ & $[-0.29,\,+0.10]$ & 0.340 & No \\
 C (HMM)     & $-0.02$ & $[-0.20,\,+0.18]$ & 0.940 & No \\
 \rowcolor{softgrey}\textbf{\fundname} & $\mathbf{+0.058}$ & $\mathbf{[+0.003,\,+0.119]}$ & $\mathbf{0.041}$ & \textbf{Yes} \\
 \bottomrule
-\end{tabularx}
+\end{tabular*}
 \end{table}
 
 \fundname{} is the only strategy with a statistically significant Sharpe gain over DM. Its
@@ -360,7 +360,7 @@ results on the risk-return plane.
 \small
 \caption{FF5+UMD regression (Newey-West HAC standard errors, 6 lags). Alpha annualized.}
 \label{tab:alpha}
-\begin{tabularx}{\textwidth}{l r r r r r r r}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l r r r r r r r}
 \toprule
 Strategy & Alpha & $t$ & $R^2$ & $\beta_{\text{MKT}}$ & $\beta_{\text{SMB}}$ & $\beta_{\text{HML}}$ & $\beta_{\text{UMD}}$ \\
 \midrule
@@ -370,7 +370,7 @@ B (Shield)  &  0.8\% & 0.68 & 0.002 & $-0.02$ & $+0.00$ & $+0.01$ & $+0.01$ \\
 C (HMM)     &  3.8\% & 2.62 & 0.007 & $-0.05$ & $+0.02$ & $+0.02$ & $+0.01$ \\
 \rowcolor{softgrey}\textbf{\fundname} & \textbf{4.0\%} & \textbf{2.63} & \textbf{0.004} & $\mathbf{-0.02}$ & $\mathbf{+0.03}$ & $\mathbf{+0.00}$ & $\mathbf{+0.01}$ \\
 \bottomrule
-\end{tabularx}
+\end{tabular*}
 \end{table}
 
 \begin{figure}[H]
