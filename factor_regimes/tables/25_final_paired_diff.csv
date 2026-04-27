@@ -1,0 +1,6 @@
+,diff,ci_low,ci_high,p_value,beats_static_5pct
+Method A,-0.5530,-1.0532,-0.1450,0.0080,False
+Method B,-0.2518,-0.5928,0.0531,0.1172,False
+Method C,-0.4512,-1.0513,0.1192,0.1288,False
+Pure ensemble,-0.3933,-0.8826,0.0078,0.0560,False
+Inertia v2,0.0597,-0.0817,0.2000,0.3948,False
