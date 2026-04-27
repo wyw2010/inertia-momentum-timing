@@ -1,0 +1,3 @@
+,n_months,mean_ann,vol_ann,sharpe_ann,skew,excess_kurt,max_drawdown
+static_eq_weight,433.0000,0.0362,0.0491,0.7375,-0.1871,2.6831,-0.1508
+method_a_timed,433.0000,0.0062,0.0393,0.1571,0.3863,4.2265,-0.2273
