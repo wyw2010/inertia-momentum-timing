@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169, 11pt]{beamer}
+\documentclass[aspectratio=169, 12pt]{beamer}
 
 % ===================== PACKAGES =====================
 \usepackage{lmodern}
@@ -12,7 +12,7 @@
 \usepackage{array}
 \usepackage{colortbl}
 
-% ===================== COLORS (matching MPSIF report aesthetic) =====================
+% ===================== COLORS =====================
 \definecolor{inertiapurple}{HTML}{5D4E8C}
 \definecolor{inertiablue}{HTML}{5B7BC9}
 \definecolor{inertiagreen}{HTML}{3FA47D}
@@ -23,14 +23,14 @@
 % ===================== BEAMER THEME =====================
 \usetheme{default}
 \usecolortheme{default}
-\setbeamersize{text margin left=14mm, text margin right=14mm}
+\setbeamersize{text margin left=12mm, text margin right=12mm}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{headline}{}
 
 \setbeamercolor{frametitle}{fg=inertiapurple, bg=white}
 \setbeamerfont{frametitle}{series=\bfseries, size=\Large}
 \setbeamertemplate{frametitle}{%
-  \vspace{10pt}\hspace{-2pt}\insertframetitle\vspace{-8pt}\\[2pt]
+  \vspace{8pt}\hspace{-2pt}\insertframetitle\vspace{-6pt}\\[2pt]
   {\color{inertiapurple}\rule{\textwidth}{0.4pt}}%
 }
 \setbeamercolor{title}{fg=inertiapurple}
@@ -39,418 +39,420 @@
 
 \setbeamertemplate{footline}{%
   \leavevmode%
-  \hbox{\begin{beamercolorbox}[wd=\paperwidth, ht=3ex, dp=1.5ex,
-        leftskip=14mm, rightskip=14mm]{footerline}%
-  \hspace*{0pt}\hfill{\tiny\color{gray}\insertframenumber\,/\,\inserttotalframenumber}%
+  \hbox{\begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex,
+        leftskip=12mm, rightskip=12mm]{footerline}%
+  \hspace*{0pt}\hfill{\footnotesize\color{gray}\insertframenumber\,/\,\inserttotalframenumber}%
   \end{beamercolorbox}}%
 }
 
-\setbeamertemplate{itemize item}{\color{inertiapurple}\footnotesize$\blacksquare$}
-\setbeamertemplate{itemize subitem}{\color{inertiablue}\scriptsize$\bullet$}
+\setbeamertemplate{itemize item}{\color{inertiapurple}\small$\blacksquare$}
+\setbeamertemplate{itemize subitem}{\color{inertiablue}\footnotesize$\bullet$}
 \setbeamerfont{itemize/enumerate body}{size=\normalsize}
 
-\newcommand{\fundname}{\textsc{Inertia v2}}
+\newcommand{\fundname}{\textsc{Inertia}}
 \newcommand{\emphp}[1]{{\color{inertiapurple}\textbf{#1}}}
 \newcommand{\emphb}[1]{{\color{inertiablue}\textbf{#1}}}
 \newcommand{\emphr}[1]{{\color{inertiared}\textbf{#1}}}
 \newcommand{\emphg}[1]{{\color{inertiagreen}\textbf{#1}}}
 
-% ===================== DOCUMENT =====================
 \begin{document}
 
 % ============================================================
-% SLIDE 1: TITLE
+% SLIDE 1: HOOK - Factor returns are time-varying
+% ============================================================
+\begin{frame}{Factor returns are not constant}
+  \vspace{-2pt}
+  \begin{center}
+    \includegraphics[width=0.94\textwidth]{figures/SLIDE_01_ff5_cumret.png}
+  \end{center}
+  \vspace{-2pt}
+  {\small Each FF5 factor compounds at a different rate, with multi-year regimes of leadership and underperformance. \emphp{If we could time the regimes, we could capture more of the premium with less of the risk.}}
+\end{frame}
+
+% ============================================================
+% SLIDE 2: Even FF5 has crashes
+% ============================================================
+\begin{frame}{Even a diversified FF5 portfolio crashes}
+  \vspace{-2pt}
+  \begin{center}
+    \includegraphics[width=0.94\textwidth]{figures/SLIDE_02_static_ff5_drawdown.png}
+  \end{center}
+  \vspace{-2pt}
+  {\small Equal-weight FF5 has lost more than 20\% in three separate episodes since 1963. Crashes are conditional, not random. \emphp{They are forecastable from the right state variables.}}
+\end{frame}
+
+% ============================================================
+% SLIDE 3: Research question
 % ============================================================
 \begin{frame}[plain]
   \vspace{0.6cm}
   \begin{center}
-    {\Huge\bfseries\color{inertiapurple} Inertia v2}\\[8pt]
-    {\large\itshape Factor Regime Detection for the MPSIF Systematic Sub-Fund}\\[24pt]
-    {\color{inertiapurple}\rule{0.45\textwidth}{0.5pt}}\\[18pt]
-    {\large Will Wu \,\textbullet\, Kathy Yang}\\[6pt]
-    {\normalsize UG54 Data Driven Investing\, \textbullet\, Spring 2026}\\[3pt]
-    {\small\color{inertiablue} Topic: Timing Strategies; Factor Investing; Machine Learning}\\[28pt]
-    \begin{minipage}{0.78\textwidth}
-      \centering\itshape
-      Three regime-detection methods, an ensemble that fails, and a hybrid
-      defensive overlay that lifts MPSIF's synthetic Sharpe from \textbf{0.80}
-      to \textbf{0.88} while cutting max drawdown by 7 points.
+    {\color{inertiapurple}\rule{0.40\textwidth}{0.5pt}}\\[26pt]
+    {\Huge\bfseries Can we detect FF5 regime changes,}\\[8pt]
+    {\Huge\bfseries and if so, does timing help?}\\[26pt]
+    {\color{inertiapurple}\rule{0.40\textwidth}{0.5pt}}\\[36pt]
+    \begin{minipage}{0.80\textwidth}
+      \centering\small\itshape
+      \fundname{} tests three methodologically orthogonal regime-detection approaches against a static equal-weight FF5 benchmark, on monthly out-of-sample data from 1990 to 2024, with rigorous statistical inference.
     \end{minipage}
   \end{center}
 \end{frame}
 
 % ============================================================
-% SLIDE 2: THE QUESTION
-% ============================================================
-\begin{frame}{The question we are answering}
-  \vspace{20pt}
-  \begin{center}
-  \begin{minipage}{0.85\textwidth}
-    \begin{itemize}
-      \item The MPSIF Systematic Sub-Fund holds 50 stocks chosen from a momentum, growth, and value blend. It is exposed to all five Fama-French factors.
-      \item \emphp{Factor premia are time-varying.} Value lost money in the 2010s. Momentum crashed in 2009 and 2022. Quality has cycled.
-      \item \emphb{Research question:} can we detect regime changes in major Fama-French factors and use those signals to make MPSIF a better fund?
-      \item \emphg{Class connections:} factor models, dynamic mean-variance, regime-switching, regularized regression, gradient boosting, paired bootstrap.
-    \end{itemize}
-  \end{minipage}
-  \end{center}
-\end{frame}
-
-% ============================================================
-% SLIDE 3: TIME-VARYING FACTOR PREMIA (motivation)
-% ============================================================
-\begin{frame}{Factor premia are not constant}
-  \vspace{-4pt}
-  \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/03_ff5_decade_sharpe_bars.png}
-  \end{center}
-  \vspace{-6pt}
-  \footnotesize Each FF5 factor's Sharpe ratio swings widely across decades. Value (HML) earns +0.62 in the 2000s, then loses (-0.30) in the 2010s. Static factor allocation pays for these regime swings.
-\end{frame}
-
-% ============================================================
-% SLIDE 4: SETUP
+% SLIDE 4: Three methods at a glance
 % ============================================================
 \begin{frame}{Three regime-detection methods}
-  \vspace{6pt}
-  \begin{center}
-  \begin{tabular}{p{0.18\textwidth} p{0.30\textwidth} p{0.38\textwidth}}
-    \toprule
-    \textbf{Method} & \textbf{Family} & \textbf{Idea} \\
-    \midrule
-    \emphp{A. Markov} & Econometric / state-space (Hamilton 1989) & Two latent regimes per factor; forward filter for $P(\text{favorable})$ \\
-    \addlinespace[2pt]
-    \emphp{B. Ridge} & Linear ML, regularized regression & Predict next-month factor return; sigmoid to probability \\
-    \addlinespace[2pt]
-    \emphp{C. GBM} & Tree-based ML & Classify favorable months from lagged factor state \\
-    \bottomrule
-  \end{tabular}
-  \end{center}
-  \vspace{12pt}
-  \begin{itemize}
-    \item All three fit independently per factor, refit annually on expanding window
-    \item OOS sample: \emphb{1990 to 2026, 433 months}, factor-only features (no macro)
-    \item Each outputs $P(\text{favorable}_t) \in [0, 1]$ per factor per month
-  \end{itemize}
-\end{frame}
-
-% ============================================================
-% SLIDE 5: HONEST RESULT 1 - INDIVIDUAL METHODS LOSE
-% ============================================================
-\begin{frame}{Honest finding 1: no single method beats static FF5}
-  \vspace{6pt}
-  \begin{center}
-  \footnotesize
-  \begin{tabular}{l r r r r}
-    \toprule
-    \textbf{Strategy} & \textbf{Sharpe} & \textbf{Vol} & \textbf{Max DD} & \textbf{$\Delta$ vs Static} \\
-    \midrule
-    Static EW FF5 & \textbf{0.74} & 4.9\% & $-15$\% & benchmark \\
-    Method A (Markov) & 0.18 & 3.9\% & $-21$\% & $-0.55$ \\
-    Method B (Ridge) & 0.49 & 2.1\% & $-3.5$\% & $-0.25$ \\
-    Method C (GBM) & 0.29 & 2.1\% & $-7.7$\% & $-0.45$ \\
-    Pure ensemble (avg of A+B+C) & 0.34 & 1.8\% & $-5.9$\% & $-0.39$ \\
-    \bottomrule
-  \end{tabular}
-  \end{center}
   \vspace{14pt}
-  \begin{itemize}
-    \item Each timing method has lower volatility AND lower Sharpe than static
-    \item The naive ensemble does not save them (we'll see why)
-    \item This is the same pattern as v1: \emphp{individuals lose}, the question is whether averaging adds value
-  \end{itemize}
-\end{frame}
-
-% ============================================================
-% SLIDE 6: HONEST RESULT 2 - HIGH EDGE CORRELATION
-% ============================================================
-\begin{frame}{Honest finding 2: the methods make the same mistakes}
-  \vspace{16pt}
   \begin{center}
-  Pairwise correlation of each method's \textbf{edge over static} (return minus static return):
-  \vspace{14pt}
-
-  \footnotesize
-  \begin{tabular}{l r r r}
+  \begin{tabular}{p{0.20\textwidth} p{0.32\textwidth} p{0.36\textwidth}}
     \toprule
-     & \textbf{A (Markov)} & \textbf{B (Ridge)} & \textbf{C (GBM)} \\
+    \textbf{Method} & \textbf{Family} & \textbf{What it learns from} \\
     \midrule
-    A (Markov) & 1.00 & \emphr{0.81} & \emphr{0.76} \\
-    B (Ridge)  & 0.81 & 1.00 & \emphr{0.88} \\
-    C (GBM)    & 0.76 & 0.88 & 1.00 \\
+    \emphp{A. Markov} & Econometric state-space (Hamilton 1989) & Each factor's own return history \\[8pt]
+    \emphp{B. Ridge}  & Linear ML, regularized regression & Factor lags + rolling volatilities \\[8pt]
+    \emphp{C. GBM}    & Tree-based machine learning & Same features, nonlinear interactions \\
     \bottomrule
   \end{tabular}
   \end{center}
   \vspace{18pt}
   \begin{itemize}
-    \item Three correlations between $\rho = 0.76$ and $0.88$
-    \item Reason: all methods see the same factor return histories, react similarly to recent volatility
-    \item For comparison: \emphp{Inertia v1's component edges had $\rho = 0.28$ to $0.66$}, which is what allowed averaging to help. Here it does not.
+    \item All three fit \textbf{independently per factor}, refit \textbf{annually} on expanding windows
+    \item Each outputs $P(\text{favorable})$ per factor per month
+    \item Same OOS discipline, same features, same backtest harness
   \end{itemize}
 \end{frame}
 
 % ============================================================
-% SLIDE 7: PIVOT TO HYBRID
+% SLIDE 5: Method A explained
 % ============================================================
-\begin{frame}{The pivot: a defensive hybrid}
-  \vspace{4pt}
-  \begin{itemize}
-    \item Pure timing fails because three methods latch onto the same noise.
-    \item But each timed strategy has \emphb{materially lower volatility} and \emphb{much smaller drawdowns} than static.
-    \item \emphp{New thesis:} use the timed signal as a \emph{defensive overlay} on a static base, not a replacement.
-  \end{itemize}
-  \vspace{16pt}
+\begin{frame}{Method A: Markov regime switching}
+  \vspace{8pt}
+  Two latent states; the model infers a smoothed posterior probability of being in the favorable regime each month.
+  \vspace{14pt}
   \begin{center}
-  \begin{minipage}{0.72\textwidth}
-    \centering
-    \emphp{\fundname{} construction:}\\[8pt]
-    \begin{equation*}
-      r_{\fundname{},t} = 0.5 \cdot r^{\text{static FF5}}_{t} + 0.5 \cdot r^{\text{Method C timed}}_{t}
-    \end{equation*}
-  \end{minipage}
+  \fbox{\parbox{0.78\textwidth}{\centering
+    Observation: $r^{f}_t \;\sim\; \mathcal{N}(\mu_{s_t},\, \sigma^2_{s_t})$\\[6pt]
+    State transitions: $P(s_{t+1} \mid s_t)$ via $2\times 2$ matrix\\[6pt]
+    Forward filter: $P(s_t \mid r_{1..t})$
+  }}
   \end{center}
   \vspace{14pt}
   \begin{itemize}
-    \item Half of capital in the static equal-weight FF5 portfolio.
-    \item Half in Method C's GBM-driven long-short factor sleeve.
-    \item Method C is chosen because it carries the \emphg{lowest correlation to static}, providing the most diversification at the portfolio level.
+    \item One model per FF5 factor, fit by maximum likelihood
+    \item Favorable state = the one with higher in-sample mean
+    \item Online forward filter, no future leakage
   \end{itemize}
 \end{frame}
 
 % ============================================================
-% SLIDE 8: SCOREBOARD
+% SLIDE 6: Method A performance
 % ============================================================
-\begin{frame}{Final scoreboard}
-  \vspace{-8pt}
+\begin{frame}{Method A: cumulative return}
+  \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/18_final_sharpe_drawdown_bars.png}
-  \end{center}
-  \vspace{-4pt}
-  \footnotesize
-  \begin{itemize}
-    \item \emphp{Inertia v2}: Sharpe \textbf{0.80}, max drawdown \textbf{$-7.9\%$}.
-    \item Beats static \textbf{0.74} Sharpe and cuts the static \textbf{$-15\%$} drawdown nearly in half.
-    \item Volatility cut from $4.9\%$ to $2.7\%$ (45 percent reduction).
-  \end{itemize}
-\end{frame}
-
-% ============================================================
-% SLIDE 9: HEADLINE CHART
-% ============================================================
-\begin{frame}{Cumulative return: 1990 to 2026}
-  \vspace{-4pt}
-  \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/17_final_cumret.png}
+    \includegraphics[width=0.92\textwidth]{figures/SLIDE_03_method_a_perf.png}
   \end{center}
   \vspace{-2pt}
-  \footnotesize \emphp{Inertia v2} (purple) outpaces static FF5 (blue) on a risk-adjusted basis. Pure timing components shown faintly for context.
+  {\small \emphr{Loses to Static FF5} (Sharpe 0.04 vs 0.99). The Markov fits are noisy on monthly data. Worth the experiment but not a winner alone.}
 \end{frame}
 
 % ============================================================
-% SLIDE 10: STATISTICAL DISCIPLINE
+% SLIDE 7: Method B explained
 % ============================================================
-\begin{frame}{Is the improvement statistically meaningful?}
+\begin{frame}{Method B: Ridge predictive regression}
+  \vspace{8pt}
+  Predict next-month factor return from lagged factor returns and rolling volatilities, then map to favorable probability via sigmoid.
   \vspace{14pt}
   \begin{center}
-  Paired block-bootstrap on Sharpe-difference vs static (5000 reps, 12-month blocks):
-  \vspace{12pt}
+  \fbox{\parbox{0.84\textwidth}{\centering
+    $\hat{r}^{f}_{t+1} \;=\; \boldsymbol\beta^\top \mathbf{x}_t \;+\; \alpha\,\|\boldsymbol\beta\|^2$\\[6pt]
+    $P(\text{favorable}_t) \;=\; \sigma\!\left( \dfrac{\hat{r}^{f}_{t+1}}{\hat{\sigma}_{\text{train}}} \right)$
+  }}
+  \end{center}
+  \vspace{14pt}
+  \begin{itemize}
+    \item L2 penalty ($\alpha$) chosen by 5-fold cross-validation
+    \item Features standardized within each training window
+    \item One model per factor, refit annually
+  \end{itemize}
+\end{frame}
 
-  \footnotesize
-  \begin{tabular}{l r r l}
-    \toprule
-    \textbf{Strategy} & \textbf{$\Delta$ Sharpe} & \textbf{95\% CI} & \textbf{Interpretation} \\
-    \midrule
-    Method A     & $-0.55$ & $[-1.05, -0.15]$ & \emphr{Worse than static} \\
-    Method B     & $-0.25$ & $[-0.59, +0.05]$ & Worse, not significant \\
-    Method C     & $-0.45$ & $[-1.05, +0.12]$ & Worse, not significant \\
-    Pure ensemble & $-0.39$ & $[-0.88, +0.01]$ & Worse, marginal \\
-    \rowcolor{lightpurple}
-    \emphp{\fundname{}} & \emphp{$+0.06$} & $[-0.08, +0.20]$ & \emphp{Better, not statistically significant} \\
-    \bottomrule
-  \end{tabular}
+% ============================================================
+% SLIDE 8: Method B performance
+% ============================================================
+\begin{frame}{Method B: cumulative return}
+  \vspace{-2pt}
+  \begin{center}
+    \includegraphics[width=0.92\textwidth]{figures/SLIDE_04_method_b_perf.png}
+  \end{center}
+  \vspace{-2pt}
+  {\small \emphr{Loses to Static FF5} (Sharpe 0.53 vs 0.99). \emphg{But} much lower volatility (2.4\% vs 5.3\%) and tiny drawdown ($-3.5\%$ vs $-12\%$). Defensive but not return-enhancing.}
+\end{frame}
+
+% ============================================================
+% SLIDE 9: Method C explained
+% ============================================================
+\begin{frame}{Method C: gradient-boosted classifier}
+  \vspace{8pt}
+  Reframe as classification: label months as favorable when next-month return exceeds the in-sample median; learn nonlinear decision boundaries.
+  \vspace{14pt}
+  \begin{center}
+  \fbox{\parbox{0.84\textwidth}{\centering
+    Label: $y^{f}_t = \mathbb{1}\{r^{f}_{t+1} > \text{median}(r^{f}_{\text{train}})\}$\\[6pt]
+    200 trees, depth 3, learning rate 0.05, subsample 0.8\\[6pt]
+    Output: $\hat{P}(y^{f}_t = 1 \mid \mathbf{x}_t)$
+  }}
+  \end{center}
+  \vspace{14pt}
+  \begin{itemize}
+    \item Hyperparameters fixed a priori (no per-window CV)
+    \item Captures nonlinear interactions Ridge cannot
+    \item One classifier per factor, refit annually
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 10: Method C performance
+% ============================================================
+\begin{frame}{Method C: cumulative return}
+  \vspace{-2pt}
+  \begin{center}
+    \includegraphics[width=0.92\textwidth]{figures/SLIDE_05_method_c_perf.png}
+  \end{center}
+  \vspace{-2pt}
+  {\small \emphr{Loses to Static FF5} (Sharpe 0.37 vs 0.99). The pattern is consistent with A and B: low volatility, low drawdown, lower mean.}
+\end{frame}
+
+% ============================================================
+% SLIDE 11: Why none works alone (correlation matrix)
+% ============================================================
+\begin{frame}{The methods make the same mistakes}
+  \vspace{12pt}
+  Pairwise correlation of each method's \textbf{edge over static FF5}:
+  \vspace{16pt}
+  \begin{center}
+    \large
+    \begin{tabular}{lccc}
+      \toprule
+       & \textbf{A (Markov)} & \textbf{B (Ridge)} & \textbf{C (GBM)} \\
+      \midrule
+      A (Markov) & 1.00 & \emphr{0.81} & \emphr{0.76} \\
+      B (Ridge)  & 0.81 & 1.00 & \emphr{0.88} \\
+      C (GBM)    & 0.76 & 0.88 & 1.00 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \vspace{18pt}
+  \begin{itemize}
+    \item All three see the same factor return histories, react similarly
+    \item Naive averaging cannot exploit decorrelation that does not exist
+    \item \emphp{The pivot:} use the timed signal as a defensive overlay, not a replacement
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 12: Inertia construction
+% ============================================================
+\begin{frame}{The \fundname{} strategy}
+  \vspace{14pt}
+  \begin{center}
+    \large
+    \begin{equation*}
+      r_{\fundname{},t} \;=\; 0.5 \cdot r_{t}^{\text{static FF5}} \;+\; 0.5 \cdot r_{t}^{\text{Method C timed}}
+    \end{equation*}
   \end{center}
   \vspace{16pt}
   \begin{itemize}
-    \item The Sharpe gain is \emphp{not statistically significant} ($p = 0.39$).
-    \item But the \emphb{drawdown reduction is structural} (\textbf{47 percent}) and reproducible.
-    \item \emphg{This is a risk-management value proposition, not a pure alpha pitch.}
+    \item Half of capital in static equal-weight FF5
+    \item Half in Method C's GBM-driven long-short factor sleeve
+    \item Method C is the timed component because it has the lowest correlation to static, providing the most diversification at the portfolio level
+    \item \emphp{Robust}: equal-thirds and 0.4/0.3/0.3 weightings also produce Sharpe 0.76 to 0.80
   \end{itemize}
 \end{frame}
 
 % ============================================================
-% SLIDE 11: CRISIS ZOOM
+% SLIDE 13: Final scoreboard chart
 % ============================================================
-\begin{frame}{Where the overlay protects: crisis episodes}
-  \vspace{-4pt}
+\begin{frame}{Cumulative return: 2000 to 2024}
+  \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.96\textwidth]{figures/19_inertia_crisis_zoom.png}
+    \includegraphics[width=0.94\textwidth]{figures/SLIDE_06_scoreboard_cumret.png}
   \end{center}
-  \vspace{-4pt}
-  \footnotesize \emphp{Inertia v2} (purple) holds up through the GFC and the 2020 COVID + inflation sequence. The static portfolio (blue) absorbs the full impact.
+  \vspace{-2pt}
+  {\small \emphp{Inertia} (purple, thick) outpaces Static FF5 (blue) on a risk-adjusted basis. Pure timing components shown faintly for context.}
 \end{frame}
 
 % ============================================================
-% SLIDE 12: ROBUSTNESS
+% SLIDE 14: Risk-return scatter
 % ============================================================
-\begin{frame}{Robustness: holds across decades}
-  \vspace{-4pt}
+\begin{frame}{Risk-return: Inertia at the top}
+  \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.92\textwidth]{figures/20_final_subsample_bars.png}
+    \includegraphics[width=0.86\textwidth]{figures/SLIDE_07_risk_return_scatter.png}
   \end{center}
-  \vspace{-4pt}
-  \footnotesize Inertia v2 (purple) leads or ties static FF5 (blue) in every decade. The defensive component pays off most clearly in regimes where static suffers (2000s, 2020s).
+  \vspace{-2pt}
+  {\small \emphp{Inertia} achieves the highest Sharpe of any strategy tested, at less than half the volatility of Static FF5.}
 \end{frame}
 
 % ============================================================
-% SLIDE 13: COMPREHENSIVE SCOREBOARD (the full head-to-head)
+% SLIDE 15: Statistical test
 % ============================================================
-\begin{frame}{Comprehensive scoreboard: every strategy, head-to-head}
-  \vspace{6pt}
+\begin{frame}{Is the improvement statistically meaningful?}
+  \vspace{16pt}
+  Paired block-bootstrap test, Sharpe difference vs Static FF5 (5000 reps, 12-month blocks):
+  \vspace{16pt}
   \begin{center}
-  \footnotesize
-  \begin{tabular}{l r r r r}
-    \toprule
-    \textbf{Strategy} & \textbf{Mean} & \textbf{Vol} & \textbf{Sharpe} & \textbf{Max DD} \\
-    \midrule
-    Static FF5 (benchmark)           & 5.3\% & 5.3\%  & \textbf{0.99} & $-12.2\%$ \\
-    Method A (Markov)                & 0.2\% & 4.3\%  & 0.04          & $-29.3\%$ \\
-    Method B (Ridge)                 & 1.3\% & 2.4\%  & 0.53          & $-3.5\%$  \\
-    Method C (GBM)                   & 0.8\% & 2.1\%  & 0.37          & $-5.1\%$  \\
-    Pure ensemble                    & 0.6\% & 2.0\%  & 0.29          & $-7.8\%$  \\
-    \rowcolor{lightpurple}
-    \emphp{Inertia v2}               & \textbf{3.0\%}  & \textbf{2.8\%}  & \emphp{\textbf{1.07}} & \emphp{\textbf{$-5.7\%$}} \\
-    MPSIF backtest (real, 2000-2024) & 10.4\% & 20.3\% & 0.51          & $-49.7\%$ \\
-    \rowcolor{lightpurple}
-    \emphp{MPSIF + overlay}          & 5.6\% & \textbf{9.9\%} & \textbf{0.56} & \emphp{\textbf{$-26.2\%$}} \\
-    \bottomrule
-  \end{tabular}
+    \begin{tabular}{lccc}
+      \toprule
+      \textbf{Strategy} & \textbf{$\Delta$ Sharpe} & \textbf{95\% CI} & \textbf{$p$-value} \\
+      \midrule
+      Method A         & $-0.96$ & $[-1.73,-0.24]$ & $0.006$ \\
+      Method B         & $-0.46$ & $[-0.78,+0.14]$ & $0.21$ \\
+      Method C         & $-0.62$ & $[-1.22,+0.31]$ & $0.28$ \\
+      Pure ensemble    & $-0.71$ & $[-1.35,+0.01]$ & $0.06$ \\
+      \rowcolor{lightpurple}
+      \emphp{\fundname{}} & \emphp{$+0.08$} & \emphp{$[-0.04,+0.26]$} & $0.14$ \\
+      \bottomrule
+    \end{tabular}
   \end{center}
-  \vspace{10pt}
-  \footnotesize 295-month common window (2000-02 to 2024-12). All strategies monthly-rebalanced.
-  Inertia v2 \emphp{beats static FF5} on Sharpe and drawdown. Adding the overlay to the live MPSIF
-  strategy \emphp{halves both volatility and drawdown}.
-\end{frame}
-
-% ============================================================
-% SLIDE 14: HEADLINE COMPREHENSIVE CHART
-% ============================================================
-\begin{frame}{All strategies on one chart, 2000 to 2024}
-  \vspace{-4pt}
-  \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/26_comprehensive_cumret.png}
-  \end{center}
-  \vspace{-4pt}
-  \footnotesize Real cumulative return of all eight strategies on the same OOS window. \emphp{Inertia v2} (purple) is at the top. The orange line is the live MPSIF strategy from WRDS; the black line is MPSIF with the overlay.
-\end{frame}
-
-% ============================================================
-% SLIDE 15: MPSIF + OVERLAY DETAIL (real data this time)
-% ============================================================
-\begin{frame}{Applied to live MPSIF: real backtest, 2000 to 2024}
-  \vspace{8pt}
-  \begin{itemize}
-    \item Real MPSIF strategy backtested on \emphb{WRDS CRSP + Compustat} with point-in-time data, no survivorship bias.
-    \item 50-stock portfolio rebalanced monthly. 295 months of real returns.
-    \item Apply Inertia v2 overlay = 50 percent MPSIF + 50 percent Method C timed FF5 sleeve.
-  \end{itemize}
-  \vspace{14pt}
-  \begin{center}
-  \footnotesize
-  \begin{tabular}{l r r r r}
-    \toprule
-    \textbf{Strategy} & \textbf{Mean} & \textbf{Vol} & \textbf{Sharpe} & \textbf{Max DD} \\
-    \midrule
-    MPSIF backtest (real)        & 10.4\% & 20.3\% & 0.51 & $-49.7\%$ \\
-    \rowcolor{lightpurple}
-    \emphp{MPSIF + Inertia overlay} & \textbf{5.6\%} & \textbf{9.9\%} & \textbf{0.56} & \textbf{$-26.2\%$} \\
-    \bottomrule
-  \end{tabular}
-  \end{center}
-  \vspace{12pt}
-  \footnotesize Volatility \emphp{halved} (20\% to 10\%). Max drawdown \emphp{halved} ($-50$\% to $-26$\%). Sharpe modestly improved (\emphp{$+0.05$}). The overlay's value is risk reduction, not return enhancement.
-\end{frame}
-
-% ============================================================
-% SLIDE 16: SUBSAMPLE BARS (across decades, all strategies)
-% ============================================================
-\begin{frame}{Robustness: Sharpe by decade, all strategies}
-  \vspace{-4pt}
-  \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/28_comprehensive_subsample_bars.png}
-  \end{center}
-  \vspace{-4pt}
-  \footnotesize Inertia v2 (purple) leads or ties static FF5 in every decade. MPSIF + overlay (black) consistently improves on raw MPSIF (orange).
-\end{frame}
-
-% ============================================================
-% SLIDE 17: HONEST RISKS
-% ============================================================
-\begin{frame}{Honest risks}
-  \vspace{14pt}
-  \begin{center}
-  \begin{tabular}{p{0.27\textwidth} p{0.42\textwidth} p{0.21\textwidth}}
-    \toprule
-    \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact if realized} \\
-    \midrule
-    Sharpe gain not statistically significant & Drawdown and vol gains are structural; pitch as defensive, not alpha & Edge could disappear \\[4pt]
-    All three methods see the same data & Method C uses tree-based nonlinearity, partially decorrelated from linear methods & Tail correlation in stress \\[4pt]
-    Method C dominates the ensemble & Robustness: equal-thirds and 0.4/0.3/0.3 weightings still produce Sharpe 0.76 to 0.80 & Single-method dependency \\[4pt]
-    Limited live OOS evidence & Backtest covers 295 months across 3 decades and multiple regimes & Future regime breaks possible \\
-    \bottomrule
-  \end{tabular}
-  \end{center}
-\end{frame}
-
-% ============================================================
-% SLIDE 18: WHY THIS WORKS
-% ============================================================
-\begin{frame}{Why the defensive overlay works}
   \vspace{18pt}
   \begin{itemize}
-    \item \emphp{Static FF5} captures the long-run factor risk premia. \\
-          Robust, well-documented, hard to beat.
-    \item \emphp{Method C} provides regime-conditional dampening. \\
-          When P(favorable) drops below 0.5, the timed sleeve goes flat or short, providing a natural drawdown shield.
-    \item \emphp{The 50/50 mix} balances the two:
-      \begin{itemize}
-        \item Most of the static premium is preserved.
-        \item Half of capital actively manages drawdown risk.
-        \item Net effect: similar mean return, lower volatility, smaller drawdowns.
-      \end{itemize}
-    \item \emphb{Class concept:} this is the dynamic mean-variance allocation framework, applied conditionally to factor portfolios.
+    \item \emphp{\fundname{}} is the only strategy with a positive $\Delta$ Sharpe vs FF5
+    \item Not statistically significant at the 5\% level, but the structural risk reduction is unambiguous
   \end{itemize}
 \end{frame}
 
 % ============================================================
-% SLIDE 19: CONCLUSION
+% SLIDE 16: Crisis zoom
 % ============================================================
-\begin{frame}{Conclusion}
-  \vspace{20pt}
+\begin{frame}{Where Inertia protects: crisis episodes}
+  \vspace{-2pt}
   \begin{center}
-  \begin{minipage}{0.85\textwidth}
-    \begin{itemize}
-      \item \emphp{Question}: can FF5 factor regimes be detected and used to improve MPSIF?
-      \item \emphp{Honest finding 1}: pure timing methods fail because their errors are too correlated to diversify.
-      \item \emphp{Honest finding 2}: a 50/50 hybrid of static FF5 and the GBM-based timing sleeve produces a defensive overlay that lifts Sharpe modestly and cuts drawdowns substantially.
-      \item \emphp{Application}: applied to the live MPSIF May Rebalance portfolio, the overlay lifts synthetic Sharpe from 0.80 to 0.88 and cuts max drawdown from $-45\%$ to $-38\%$.
-      \item \emphp{Pitch}: defensive risk-management overlay, not pure alpha. Right value proposition for risk-averse mandates.
-    \end{itemize}
-  \end{minipage}
+    \includegraphics[width=0.94\textwidth]{figures/19_inertia_crisis_zoom.png}
+  \end{center}
+  \vspace{-2pt}
+  {\small Inertia (purple) holds up through both the 2008 GFC and the 2020-22 COVID + inflation sequence, while static FF5 (blue) absorbs the full impact.}
+\end{frame}
+
+% ============================================================
+% SLIDE 17: Risks
+% ============================================================
+\begin{frame}{Honest risks}
+  \vspace{12pt}
+  \begin{center}
+  \small
+  \begin{tabular}{p{0.30\textwidth} p{0.40\textwidth} p{0.20\textwidth}}
+    \toprule
+    \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact} \\
+    \midrule
+    Sharpe gain not statistically significant & Drawdown and vol gains are structural, reproducible & Edge could disappear \\[4pt]
+    Methods see the same data & Method C nonlinearity gives partial decorrelation; still room for diverse data sources & Tail correlation in stress \\[4pt]
+    Method C dominates the ensemble & Equal-thirds and 0.4/0.3/0.3 weightings produce 0.76 to 0.80 Sharpe & Single-method dependency \\[4pt]
+    Limited live OOS evidence & 295 months across 3 decades and multiple regimes & Future regime breaks possible \\
+    \bottomrule
+  \end{tabular}
   \end{center}
 \end{frame}
 
 % ============================================================
-% SLIDE 20: Q&A
+% SLIDE 18: Why it works
+% ============================================================
+\begin{frame}{Why the defensive hybrid works}
+  \vspace{16pt}
+  \begin{itemize}
+    \item \emphp{Static FF5} captures the long-run factor risk premia. Robust, well-documented, hard to beat directly.
+    \item \emphp{Method C} provides regime-conditional dampening. When $P(\text{favorable})$ drops below 0.5, the timed sleeve goes flat or short, providing a natural drawdown shield.
+    \item \emphp{The 50/50 mix} balances the two:
+      \begin{itemize}
+        \item Most of the static premium is preserved
+        \item Half of capital actively manages drawdown risk
+        \item Net effect: similar mean return, much lower volatility, smaller drawdowns
+      \end{itemize}
+    \item \emphb{Class concept}: dynamic mean-variance allocation, applied conditionally to factor portfolios
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 19: Conclusion
+% ============================================================
+\begin{frame}{Conclusion}
+  \vspace{18pt}
+  \begin{center}
+    \begin{tabular}{lccc}
+      \toprule
+       & \textbf{Sharpe} & \textbf{Vol} & \textbf{Max DD} \\
+      \midrule
+      Static FF5 (benchmark) & 0.99 & 5.3\% & $-12\%$ \\
+      \rowcolor{lightpurple}
+      \emphp{\fundname{}} & \emphp{1.07} & \emphp{2.8\%} & \emphp{$-6\%$} \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \vspace{20pt}
+  \begin{itemize}
+    \item Pure factor regime timing fails because methods make correlated mistakes
+    \item A defensive hybrid (50\% static FF5 + 50\% GBM-timed) lifts Sharpe modestly and \emphp{halves volatility and drawdown}
+    \item This is a risk-management value proposition: same factor premium, materially less risk
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 20: LIVE MPSIF DEMO
+% ============================================================
+\begin{frame}{Live test: MPSIF Systematic Sub-Fund}
+  \vspace{6pt}
+  \begin{itemize}
+    \item Implemented Inertia regime weights \emphp{10 days ago} on \emphb{\$1.03M AUM} in the MPSIF Systematic Sub-Fund
+    \item Forward test underway. Top 10 current holdings:
+  \end{itemize}
+  \vspace{4pt}
+  \begin{center}
+    \footnotesize
+    \begin{tabular}{lrrrrr}
+      \toprule
+      \textbf{Ticker} & \textbf{Weight} & \textbf{$z_{\text{Mom}}$} & \textbf{$z_{\text{Growth}}$} & \textbf{$z_{\text{Value}}$} & \textbf{Composite} \\
+      \midrule
+      MU   & 3.50\% & 5.68 & 2.98 & $-0.43$ & 2.74 \\
+      SNDK & 3.42\% & 5.71 & 2.87 & $-0.65$ & 2.64 \\
+      LITE & 3.18\% & 5.71 & 2.44 & $-1.06$ & 2.36 \\
+      SATS & 3.05\% & 5.71 & 1.61 & $-0.70$ & 2.21 \\
+      CIEN & 2.99\% & 5.71 & 1.69 & $-0.99$ & 2.14 \\
+      WDC  & 2.80\% & 5.71 & 0.58 & $-0.58$ & 1.90 \\
+      STX  & 2.64\% & 5.71 & 0.33 & $-0.89$ & 1.72 \\
+      TER  & 2.59\% & 4.43 & 1.50 & $-0.94$ & 1.66 \\
+      FIX  & 2.39\% & 4.03 & 1.01 & $-0.78$ & 1.42 \\
+      PSX  & 2.27\% & 0.99 & 2.48 & $+0.37$ & 1.28 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \vspace{8pt}
+  {\footnotesize Composite = mean of $z_{\text{Mom}}$, $z_{\text{Growth}}$, $z_{\text{Value}}$.
+  Inertia overlay shifts factor exposures monthly based on regime probabilities.}
+\end{frame}
+
+% ============================================================
+% SLIDE 21: LIVE MPSIF EQUITY CURVE
+% ============================================================
+\begin{frame}{Live MPSIF performance to date}
+  \vspace{-2pt}
+  \begin{center}
+    \includegraphics[width=0.92\textwidth]{figures/mpsif_equity_curve.png}
+  \end{center}
+  \vspace{-2pt}
+  {\small Live since Oct 2025. Full-year return $+19.4\%$ vs S\&P 500 $+7.7\%$. Inertia regime weights deployed in May 2026; forward test underway.}
+\end{frame}
+
+% ============================================================
+% SLIDE 22: Q&A
 % ============================================================
 \begin{frame}[plain]
   \vspace{1.5cm}
   \begin{center}
     {\Huge\bfseries\color{inertiapurple} Questions?}\\[24pt]
-    {\color{inertiapurple}\rule{0.40\textwidth}{0.4pt}}\\[20pt]
-    {\large Will Wu \,\textbullet\, Kathy Yang}\\[8pt]
-    {\small UG54 Data Driven Investing\, \textbullet\, Spring 2026}\\[16pt]
-    {\footnotesize\itshape Code, data, notebooks at}\\[2pt]
-    {\footnotesize\color{inertiapurple} github.com/wyw2010/inertia-momentum-timing}
+    {\color{inertiapurple}\rule{0.40\textwidth}{0.4pt}}\\[24pt]
+    {\large Will Wu \,\textbullet\, Kathy Yang}\\[10pt]
+    {\small UG54 Data Driven Investing\, \textbullet\, Spring 2026}\\[20pt]
+    {\footnotesize\itshape github.com/wyw2010/inertia-momentum-timing}
   \end{center}
 \end{frame}
 
