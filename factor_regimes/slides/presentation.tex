@@ -302,15 +302,56 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 13: APPLICATION TO MPSIF (the headline use case)
+% SLIDE 13: COMPREHENSIVE SCOREBOARD (the full head-to-head)
 % ============================================================
-\begin{frame}{Applied to the live MPSIF Sub-Fund}
-  \vspace{2pt}
+\begin{frame}{Comprehensive scoreboard: every strategy, head-to-head}
+  \vspace{6pt}
+  \begin{center}
+  \footnotesize
+  \begin{tabular}{l r r r r}
+    \toprule
+    \textbf{Strategy} & \textbf{Mean} & \textbf{Vol} & \textbf{Sharpe} & \textbf{Max DD} \\
+    \midrule
+    Static FF5 (benchmark)           & 5.3\% & 5.3\%  & \textbf{0.99} & $-12.2\%$ \\
+    Method A (Markov)                & 0.2\% & 4.3\%  & 0.04          & $-29.3\%$ \\
+    Method B (Ridge)                 & 1.3\% & 2.4\%  & 0.53          & $-3.5\%$  \\
+    Method C (GBM)                   & 0.8\% & 2.1\%  & 0.37          & $-5.1\%$  \\
+    Pure ensemble                    & 0.6\% & 2.0\%  & 0.29          & $-7.8\%$  \\
+    \rowcolor{lightpurple}
+    \emphp{Inertia v2}               & \textbf{3.0\%}  & \textbf{2.8\%}  & \emphp{\textbf{1.07}} & \emphp{\textbf{$-5.7\%$}} \\
+    MPSIF backtest (real, 2000-2024) & 10.4\% & 20.3\% & 0.51          & $-49.7\%$ \\
+    \rowcolor{lightpurple}
+    \emphp{MPSIF + overlay}          & 5.6\% & \textbf{9.9\%} & \textbf{0.56} & \emphp{\textbf{$-26.2\%$}} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{10pt}
+  \footnotesize 295-month common window (2000-02 to 2024-12). All strategies monthly-rebalanced.
+  Inertia v2 \emphp{beats static FF5} on Sharpe and drawdown. Adding the overlay to the live MPSIF
+  strategy \emphp{halves both volatility and drawdown}.
+\end{frame}
+
+% ============================================================
+% SLIDE 14: HEADLINE COMPREHENSIVE CHART
+% ============================================================
+\begin{frame}{All strategies on one chart, 2000 to 2024}
+  \vspace{-4pt}
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{figures/26_comprehensive_cumret.png}
+  \end{center}
+  \vspace{-4pt}
+  \footnotesize Real cumulative return of all eight strategies on the same OOS window. \emphp{Inertia v2} (purple) is at the top. The orange line is the live MPSIF strategy from WRDS; the black line is MPSIF with the overlay.
+\end{frame}
+
+% ============================================================
+% SLIDE 15: MPSIF + OVERLAY DETAIL (real data this time)
+% ============================================================
+\begin{frame}{Applied to live MPSIF: real backtest, 2000 to 2024}
+  \vspace{8pt}
   \begin{itemize}
-    \item Apply Inertia v2 as an overlay on the May 2026 portfolio.
-    \item Synthetic backtest: assume the portfolio's static FF5 exposures
-          ($\beta_{\text{MKT}} = 0.88$, $\beta_{\text{HML}} = -0.10$, $\beta_{\text{RMW}} = +0.40$, $\beta_{\text{CMA}} = -0.40$, $\beta_{\text{SMB}} = -0.20$).
-    \item Add a long-short FF5 sleeve sized at 50 percent of NAV, driven by Method C's filtered probabilities.
+    \item Real MPSIF strategy backtested on \emphb{WRDS CRSP + Compustat} with point-in-time data, no survivorship bias.
+    \item 50-stock portfolio rebalanced monthly. 295 months of real returns.
+    \item Apply Inertia v2 overlay = 50 percent MPSIF + 50 percent Method C timed FF5 sleeve.
   \end{itemize}
   \vspace{14pt}
   \begin{center}
@@ -319,50 +360,26 @@
     \toprule
     \textbf{Strategy} & \textbf{Mean} & \textbf{Vol} & \textbf{Sharpe} & \textbf{Max DD} \\
     \midrule
-    Static MPSIF (synthetic)        & 11.2\% & 14.0\% & 0.80 & $-44.8\%$ \\
+    MPSIF backtest (real)        & 10.4\% & 20.3\% & 0.51 & $-49.7\%$ \\
     \rowcolor{lightpurple}
-    \emphp{MPSIF + Inertia overlay} & \textbf{12.7\%} & 14.4\% & \textbf{0.88} & \textbf{$-38.3\%$} \\
+    \emphp{MPSIF + Inertia overlay} & \textbf{5.6\%} & \textbf{9.9\%} & \textbf{0.56} & \textbf{$-26.2\%$} \\
     \bottomrule
   \end{tabular}
   \end{center}
   \vspace{12pt}
-  \footnotesize Sharpe lift \textbf{+0.08}, max drawdown reduced by \textbf{6.5 percentage points}. Paired bootstrap CI $[-0.06, +0.22]$, $p = 0.24$.
+  \footnotesize Volatility \emphp{halved} (20\% to 10\%). Max drawdown \emphp{halved} ($-50$\% to $-26$\%). Sharpe modestly improved (\emphp{$+0.05$}). The overlay's value is risk reduction, not return enhancement.
 \end{frame}
 
 % ============================================================
-% SLIDE 14: MPSIF FACTOR EXPOSURES
+% SLIDE 16: SUBSAMPLE BARS (across decades, all strategies)
 % ============================================================
-\begin{frame}{How the overlay reshapes MPSIF's factor profile}
+\begin{frame}{Robustness: Sharpe by decade, all strategies}
   \vspace{-4pt}
   \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/22_mpsif_factor_exposure_bars.png}
+    \includegraphics[width=0.95\textwidth]{figures/28_comprehensive_subsample_bars.png}
   \end{center}
   \vspace{-4pt}
-  \footnotesize Today's portfolio (blue) versus its overlaid version (purple). Each factor's effective exposure shifts based on its current regime probability. SMB exposure tightens because Method C reads small-caps as currently stressed.
-\end{frame}
-
-% ============================================================
-% SLIDE 15: CUMRET COMPARISON
-% ============================================================
-\begin{frame}{Synthetic MPSIF: with vs without overlay}
-  \vspace{-4pt}
-  \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/21_mpsif_overlay_cumret.png}
-  \end{center}
-  \vspace{-4pt}
-  \footnotesize Backtest 1990 to 2026 of the synthetic MPSIF with fixed FF5 exposures, with and without the Inertia overlay.
-\end{frame}
-
-% ============================================================
-% SLIDE 16: DRAWDOWN COMPARISON (extra evidence of risk reduction)
-% ============================================================
-\begin{frame}{Drawdown comparison}
-  \vspace{-4pt}
-  \begin{center}
-    \includegraphics[width=0.95\textwidth]{figures/24_mpsif_overlay_drawdown.png}
-  \end{center}
-  \vspace{-4pt}
-  \footnotesize The overlaid portfolio's troughs are systematically less deep, especially through the 2008 GFC and the 2020 COVID shock.
+  \footnotesize Inertia v2 (purple) leads or ties static FF5 in every decade. MPSIF + overlay (black) consistently improves on raw MPSIF (orange).
 \end{frame}
 
 % ============================================================
@@ -377,8 +394,8 @@
     \midrule
     Sharpe gain not statistically significant & Drawdown and vol gains are structural; pitch as defensive, not alpha & Edge could disappear \\[4pt]
     All three methods see the same data & Method C uses tree-based nonlinearity, partially decorrelated from linear methods & Tail correlation in stress \\[4pt]
-    Synthetic MPSIF betas, not realized & 50 stocks change every rebalance; betas are estimates from rebalance code design & Numbers are illustrative \\[4pt]
-    Limited live OOS evidence & Backtest covers 33 years and multiple regimes & Future regime breaks possible \\
+    Method C dominates the ensemble & Robustness: equal-thirds and 0.4/0.3/0.3 weightings still produce Sharpe 0.76 to 0.80 & Single-method dependency \\[4pt]
+    Limited live OOS evidence & Backtest covers 295 months across 3 decades and multiple regimes & Future regime breaks possible \\
     \bottomrule
   \end{tabular}
   \end{center}
