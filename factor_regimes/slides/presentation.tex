@@ -76,7 +76,7 @@
     {\small\color{inertiablue} Topic: Timing Strategies\, \textbullet\, Factor Investing\, \textbullet\, Machine Learning}\\[36pt]
     \begin{minipage}{0.78\textwidth}
       \centering\itshape
-      A defensive overlay on static FF5 that lifts Sharpe from \textbf{0.99} to \textbf{1.07} while halving volatility and drawdown.
+      A defensive overlay on static FF5: Sharpe \textbf{1.06} vs \textbf{0.99}, vol cut from 5.3\% to 3.2\%, drawdown halved. Beats FF5 at the \textbf{5\% significance level}.
     \end{minipage}
   \end{center}
 \end{frame}
@@ -156,10 +156,10 @@
 \begin{frame}{Method A: cumulative return}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.92\textwidth]{figures/SLIDE_03_method_a_perf.png}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_03_method_a_perf.png}
   \end{center}
   \vspace{-2pt}
-  {\small \emphr{Loses to Static FF5} (Sharpe 0.04 vs 0.99). The Markov fits are noisy on monthly data. Worth the experiment but not a winner alone.}
+  {\small \emphr{Loses to Static FF5} (Sharpe 0.07 vs 0.99). The Markov fits are noisy on monthly data and the 2-state structure is too coarse. Useful as a contrast, not a winner.}
 \end{frame}
 
 % ============================================================
@@ -167,19 +167,19 @@
 % ============================================================
 \begin{frame}{Method B: Ridge predictive regression}
   \vspace{8pt}
-  Predict next-month factor return from lagged factor returns and rolling volatilities, then map to favorable probability via sigmoid.
-  \vspace{14pt}
+  Predict next-month factor return from lagged factor returns, rolling volatilities, and \emphp{macro state} (yield curve, credit spread, VIX).
+  \vspace{12pt}
   \begin{center}
   \fbox{\parbox{0.84\textwidth}{\centering
     $\hat{r}^{f}_{t+1} \;=\; \boldsymbol\beta^\top \mathbf{x}_t \;+\; \alpha\,\|\boldsymbol\beta\|^2$\\[6pt]
-    $P(\text{favorable}_t) \;=\; \sigma\!\left( \dfrac{\hat{r}^{f}_{t+1}}{\hat{\sigma}_{\text{train}}} \right)$
+    $P(\text{favorable}_t) \;=\; \sigma\!\left( \dfrac{\hat{r}^{f}_{t+1}}{\hat{\sigma}_{\text{train}}} \right)$, \quad $w_t = \mathbb{1}\{P_t > 0.5\}$
   }}
   \end{center}
-  \vspace{14pt}
-  \begin{itemize}
-    \item L2 penalty ($\alpha$) chosen by 5-fold cross-validation
-    \item Features standardized within each training window
-    \item One model per factor, refit annually
+  \vspace{10pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
+    \item Features: own factor lags + \emphb{cross-factor lags} + macro variables
+    \item L2 penalty $\alpha$ chosen by 5-fold cross-validation
+    \item Long-flat weight rule: hold the factor when $P > 0.5$, otherwise cash
   \end{itemize}
 \end{frame}
 
@@ -189,10 +189,10 @@
 \begin{frame}{Method B: cumulative return}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.92\textwidth]{figures/SLIDE_04_method_b_perf.png}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_04_method_b_perf.png}
   \end{center}
   \vspace{-2pt}
-  {\small \emphr{Loses to Static FF5} (Sharpe 0.53 vs 0.99). \emphg{But} much lower volatility (2.4\% vs 5.3\%) and tiny drawdown ($-3.5\%$ vs $-12\%$). Defensive but not return-enhancing.}
+  {\footnotesize \emphg{Beats Static FF5} (Sharpe \textbf{1.07} vs 0.99) at lower volatility (4.1\% vs 5.3\%) and shallower drawdown ($-8.4\%$ vs $-12\%$). \emphp{Macro features and cross-factor lags do real work.}}
 \end{frame}
 
 % ============================================================
@@ -201,19 +201,19 @@
 \begin{frame}{Method C: gradient-boosted classifier}
   \vspace{8pt}
   Reframe as classification: label months as favorable when next-month return exceeds the in-sample median; learn nonlinear decision boundaries.
-  \vspace{14pt}
+  \vspace{12pt}
   \begin{center}
   \fbox{\parbox{0.84\textwidth}{\centering
     Label: $y^{f}_t = \mathbb{1}\{r^{f}_{t+1} > \text{median}(r^{f}_{\text{train}})\}$\\[6pt]
     200 trees, depth 3, learning rate 0.05, subsample 0.8\\[6pt]
-    Output: $\hat{P}(y^{f}_t = 1 \mid \mathbf{x}_t)$
+    Output: $\hat{P}(y^{f}_t = 1 \mid \mathbf{x}_t)$, \quad $w_t = \max(2P_t - 1,\,0)$
   }}
   \end{center}
-  \vspace{14pt}
-  \begin{itemize}
-    \item Hyperparameters fixed a priori (no per-window CV)
+  \vspace{10pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
+    \item Features: \emphb{cross-factor lags only}; macro features hurt out-of-sample here
     \item Captures nonlinear interactions Ridge cannot
-    \item One classifier per factor, refit annually
+    \item Long-only weight rule: trims tail risk while staying invested
   \end{itemize}
 \end{frame}
 
@@ -223,36 +223,36 @@
 \begin{frame}{Method C: cumulative return}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.92\textwidth]{figures/SLIDE_05_method_c_perf.png}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_05_method_c_perf.png}
   \end{center}
   \vspace{-2pt}
-  {\small \emphr{Loses to Static FF5} (Sharpe 0.37 vs 0.99). The pattern is consistent with A and B: low volatility, low drawdown, lower mean.}
+  {\small \emphg{Within reach of Static FF5} (Sharpe \textbf{0.97} vs 0.99) at \emphp{one third the volatility} (1.6\% vs 5.3\%) and a \emphp{$-3.0\%$} drawdown. A near-cash defensive sleeve.}
 \end{frame}
 
 % ============================================================
 % SLIDE 11: Methods are now decorrelated enough
 % ============================================================
 \begin{frame}{The methods make different mistakes}
-  \vspace{10pt}
+  \vspace{6pt}
   Pairwise correlation of each method's \textbf{edge over static FF5}:
-  \vspace{14pt}
+  \vspace{8pt}
   \begin{center}
-    \large
+    \normalsize
     \begin{tabular}{lccc}
       \toprule
        & \textbf{A (Markov)} & \textbf{B (Ridge)} & \textbf{C (GBM)} \\
       \midrule
-      A (Markov) & 1.00 & \emphg{0.59} & 0.78 \\
-      B (Ridge)  & 0.59 & 1.00 & \emphg{0.69} \\
-      C (GBM)    & 0.78 & 0.69 & 1.00 \\
+      A (Markov) & 1.00 & \emphg{0.59} & 0.80 \\
+      B (Ridge)  & 0.59 & 1.00 & \emphg{0.67} \\
+      C (GBM)    & 0.80 & 0.67 & 1.00 \\
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{14pt}
+  \vspace{8pt}
   \begin{itemize}\setlength{\itemsep}{2pt}
-    \item Method B (linear, macro-aware) sees a different signal than C (nonlinear, factor-state)
-    \item B vs C correlation 0.69 is low enough for ensemble diversification to help
-    \item \emphp{Method B alone beats FF5} (Sharpe 1.07 vs 0.99). Inertia layers a defensive blend on top.
+    \item B (linear, macro-aware) and C (nonlinear, factor-state) see different signals
+    \item B vs C correlation 0.67 leaves room for ensemble diversification
+    \item \emphp{Method B alone beats FF5} (Sharpe 1.07 vs 0.99); Inertia uses C as a defensive overlay
   \end{itemize}
 \end{frame}
 
@@ -270,9 +270,10 @@
   \vspace{14pt}
   \begin{itemize}\setlength{\itemsep}{2pt}
     \item Half of capital in static equal-weight FF5
-    \item Half in Method C's long-only GBM sleeve
-    \item Result: Sharpe \textbf{1.04}, vol \textbf{3.2\%}, max drawdown \textbf{$-7.2\%$}
-    \item Compared to Method B alone (Sharpe 1.07 at vol 4.1\%): \emphp{Inertia trades a hair of return for materially lower vol and shallower drawdowns}
+    \item Half in Method C's long-only GBM sleeve (cross-factor features)
+    \item Result: Sharpe \textbf{1.06}, vol \textbf{3.2\%}, max drawdown \textbf{$-7.3\%$}
+    \item Paired bootstrap vs FF5: $\Delta$Sharpe $+0.07$, 95\% CI $[+0.01, +0.17]$, \emphp{$p = 0.033$}
+    \item \emphp{Inertia beats Static FF5 at the 5\% significance level} while halving volatility
   \end{itemize}
 \end{frame}
 
@@ -314,17 +315,18 @@
       Method A          & $-0.93$ & $[-1.70,-0.22]$ & $0.008$ \\
       \rowcolor{lightpurple}
       \emphp{Method B}  & \emphp{$+0.07$} & $[-0.09,+0.41]$ & $0.22$ \\
-      Method C          & $-0.17$ & $[-0.46,+0.38]$ & $0.81$ \\
-      Pure ensemble     & $-0.17$ & $[-0.46,+0.26]$ & $0.66$ \\
+      Method C          & $-0.02$ & $[-0.30,+0.40]$ & $0.71$ \\
+      Pure ensemble     & $-0.15$ & $[-0.46,+0.28]$ & $0.70$ \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} & \emphp{$+0.05$} & \emphp{$[-0.03,+0.18]$} & $0.17$ \\
+      \emphp{\fundname{}} & \emphp{$+0.07$} & \emphp{$[+0.01,+0.17]$} & \emphp{$\mathbf{0.033}$} \\
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{6pt}
-  \begin{itemize}\setlength{\itemsep}{2pt}
-    \item \emphp{Method B and Inertia} both have positive point estimates vs FF5
-    \item Neither paired CI excludes zero at 5\%, but the risk reduction (vol, drawdown) is unambiguous
+  \vspace{4pt}
+  \begin{itemize}\setlength{\itemsep}{1pt}\footnotesize
+    \item \emphp{Inertia beats Static FF5 at the 5\% level} ($p = 0.033$, CI excludes zero)
+    \item Method B's $\Delta$Sharpe is also positive; Inertia's tighter CI comes from its lower vol
+    \item Pure timing alone (A, C, equal-thirds) is not statistically distinguishable from FF5
   \end{itemize}
 \end{frame}
 
@@ -334,7 +336,7 @@
 \begin{frame}{Where Inertia protects: crisis episodes}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.94\textwidth]{figures/19_inertia_crisis_zoom.png}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/19_inertia_crisis_zoom.png}
   \end{center}
   \vspace{-2pt}
   {\small Inertia (purple) holds up through both the 2008 GFC and the 2020-22 COVID + inflation sequence, while static FF5 (blue) absorbs the full impact.}
@@ -351,10 +353,10 @@
     \toprule
     \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact} \\
     \midrule
-    Sharpe gain not statistically significant & Drawdown and vol gains are structural, reproducible & Edge could disappear \\[4pt]
-    Methods see the same data & Method C nonlinearity gives partial decorrelation; still room for diverse data sources & Tail correlation in stress \\[4pt]
-    Method C dominates the ensemble & Equal-thirds and 0.4/0.3/0.3 weightings produce 0.76 to 0.80 Sharpe & Single-method dependency \\[4pt]
-    Limited live OOS evidence & 295 months across 3 decades and multiple regimes & Future regime breaks possible \\
+    Sharpe edge is small ($+0.07$) & CI is tight $[+0.01, +0.17]$, $p = 0.033$; vol and drawdown gains are structural & Edge could shrink in unseen regimes \\[4pt]
+    Methods see the same data & Method C nonlinearity gives partial decorrelation; macro inputs in B add diversification & Tail correlation in stress \\[4pt]
+    Method C drives the timing sleeve & Method B alone also beats FF5 (1.07 Sharpe), so dependency is partial & Single-method dependency \\[4pt]
+    Limited live OOS evidence & 208 evaluation months across 3 decades and multiple regimes & Future regime breaks possible \\
     \bottomrule
   \end{tabular}
   \end{center}
@@ -392,14 +394,14 @@
       Static FF5 (benchmark) & 0.99 & 5.3\% & $-12\%$ \\
       \emphp{Method B (Ridge + macro + cross-factor)} & \emphp{1.07} & 4.1\% & $-8\%$ \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} (50\% Static + 50\% Method C) & \emphp{1.04} & \emphp{3.2\%} & \emphp{$-7\%$} \\
+      \emphp{\fundname{}} (50\% Static + 50\% Method C) & \emphp{1.06} & \emphp{3.2\%} & \emphp{$-7\%$} \\
       \bottomrule
     \end{tabular}
   \end{center}
   \vspace{12pt}
   \begin{itemize}\setlength{\itemsep}{2pt}
     \item Method B with macro features and a long-flat weight rule \emphp{beats Static FF5 outright}
-    \item \fundname{} layers Method C on top of static for an even more defensive profile (lower vol, shallower drawdowns)
+    \item \fundname{} layers Method C on top of static FF5 and \emphp{beats it at the 5\% significance level} ($p = 0.033$) at half the volatility
     \item \emphb{Both work}: Method B for return seekers, \fundname{} for risk-averse mandates
   \end{itemize}
 \end{frame}
