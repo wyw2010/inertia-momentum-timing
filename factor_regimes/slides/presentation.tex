@@ -23,7 +23,12 @@
 % ===================== BEAMER THEME =====================
 \usetheme{default}
 \usecolortheme{default}
-\setbeamersize{text margin left=12mm, text margin right=12mm}
+\usefonttheme{serif}            % match the chart font (Computer Modern Roman)
+\setbeamerfont{frametitle}{family=\rmfamily, series=\bfseries, size=\Large}
+\setbeamerfont{title}{family=\rmfamily, series=\bfseries}
+\setbeamerfont{author}{family=\rmfamily}
+\setbeamerfont{normal text}{family=\rmfamily}
+\setbeamersize{text margin left=10mm, text margin right=10mm}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{headline}{}
 
@@ -58,64 +63,65 @@
 \begin{document}
 
 % ============================================================
-% SLIDE 1: HOOK - Factor returns are time-varying
-% ============================================================
-\begin{frame}{Factor returns are not constant}
-  \vspace{-2pt}
-  \begin{center}
-    \includegraphics[width=0.94\textwidth]{figures/SLIDE_01_ff5_cumret.png}
-  \end{center}
-  \vspace{-2pt}
-  {\small Each FF5 factor compounds at a different rate, with multi-year regimes of leadership and underperformance. \emphp{If we could time the regimes, we could capture more of the premium with less of the risk.}}
-\end{frame}
-
-% ============================================================
-% SLIDE 2: Even FF5 has crashes
-% ============================================================
-\begin{frame}{Even a diversified FF5 portfolio crashes}
-  \vspace{-2pt}
-  \begin{center}
-    \includegraphics[width=0.94\textwidth]{figures/SLIDE_02_static_ff5_drawdown.png}
-  \end{center}
-  \vspace{-2pt}
-  {\small Equal-weight FF5 has lost more than 20\% in three separate episodes since 1963. Crashes are conditional, not random. \emphp{They are forecastable from the right state variables.}}
-\end{frame}
-
-% ============================================================
-% SLIDE 3: Research question
+% SLIDE 1: TITLE
 % ============================================================
 \begin{frame}[plain]
-  \vspace{0.6cm}
+  \vspace{0.8cm}
   \begin{center}
-    {\color{inertiapurple}\rule{0.40\textwidth}{0.5pt}}\\[26pt]
-    {\Huge\bfseries Can we detect FF5 regime changes,}\\[8pt]
-    {\Huge\bfseries and if so, does timing help?}\\[26pt]
-    {\color{inertiapurple}\rule{0.40\textwidth}{0.5pt}}\\[36pt]
-    \begin{minipage}{0.80\textwidth}
-      \centering\small\itshape
-      \fundname{} tests three methodologically orthogonal regime-detection approaches against a static equal-weight FF5 benchmark, on monthly out-of-sample data from 1990 to 2024, with rigorous statistical inference.
+    {\Huge\bfseries\color{inertiapurple} Inertia}\\[10pt]
+    {\large\itshape Factor Regime Detection in the FF5 Universe}\\[26pt]
+    {\color{inertiapurple}\rule{0.45\textwidth}{0.5pt}}\\[22pt]
+    {\large Will Wu \,\textbullet\, Kathy Yang}\\[8pt]
+    {\normalsize UG54 Data Driven Investing\, \textbullet\, Spring 2026}\\[3pt]
+    {\small\color{inertiablue} Topic: Timing Strategies\, \textbullet\, Factor Investing\, \textbullet\, Machine Learning}\\[36pt]
+    \begin{minipage}{0.78\textwidth}
+      \centering\itshape
+      A defensive overlay on static FF5 that lifts Sharpe from \textbf{0.99} to \textbf{1.07} while halving volatility and drawdown.
     \end{minipage}
   \end{center}
+\end{frame}
+
+% ============================================================
+% SLIDE 2: HOOK - Factor returns are time-varying
+% ============================================================
+\begin{frame}{Factor returns are not constant}
+  \begin{center}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_01_ff5_cumret.png}
+  \end{center}
+  \vspace{-4pt}
+  {\footnotesize Each FF5 factor compounds at a different rate, with multi-year regimes of leadership and underperformance. \emphp{If we could time the regimes, we could capture more of the premium with less of the risk.}}
+\end{frame}
+
+% ============================================================
+% SLIDE 3: Even FF5 has crashes
+% ============================================================
+\begin{frame}{Even a diversified FF5 portfolio crashes}
+  \begin{center}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_02_static_ff5_drawdown.png}
+  \end{center}
+  \vspace{-4pt}
+  {\footnotesize Equal-weight FF5 has lost more than 20\% in three separate episodes since 1963. Crashes are conditional, not random. \emphp{They are forecastable from the right state variables.}}
 \end{frame}
 
 % ============================================================
 % SLIDE 4: Three methods at a glance
 % ============================================================
 \begin{frame}{Three regime-detection methods}
-  \vspace{14pt}
+  \vspace{6pt}
   \begin{center}
-  \begin{tabular}{p{0.20\textwidth} p{0.32\textwidth} p{0.36\textwidth}}
+  \footnotesize
+  \begin{tabular}{p{0.18\textwidth} p{0.32\textwidth} p{0.34\textwidth}}
     \toprule
     \textbf{Method} & \textbf{Family} & \textbf{What it learns from} \\
     \midrule
-    \emphp{A. Markov} & Econometric state-space (Hamilton 1989) & Each factor's own return history \\[8pt]
-    \emphp{B. Ridge}  & Linear ML, regularized regression & Factor lags + rolling volatilities \\[8pt]
+    \emphp{A. Markov} & Econometric state-space (Hamilton 1989) & Each factor's own return history \\[4pt]
+    \emphp{B. Ridge}  & Linear ML, regularized regression & Factor lags + rolling volatilities \\[4pt]
     \emphp{C. GBM}    & Tree-based machine learning & Same features, nonlinear interactions \\
     \bottomrule
   \end{tabular}
   \end{center}
-  \vspace{18pt}
-  \begin{itemize}
+  \vspace{8pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
     \item All three fit \textbf{independently per factor}, refit \textbf{annually} on expanding windows
     \item Each outputs $P(\text{favorable})$ per factor per month
     \item Same OOS discipline, same features, same backtest harness
@@ -274,34 +280,33 @@
 % SLIDE 13: Final scoreboard chart
 % ============================================================
 \begin{frame}{Cumulative return: 2000 to 2024}
-  \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.94\textwidth]{figures/SLIDE_06_scoreboard_cumret.png}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_06_scoreboard_cumret.png}
   \end{center}
-  \vspace{-2pt}
-  {\small \emphp{Inertia} (purple, thick) outpaces Static FF5 (blue) on a risk-adjusted basis. Pure timing components shown faintly for context.}
+  \vspace{-4pt}
+  {\footnotesize \emphp{Inertia} (purple, thick) outpaces Static FF5 (blue) on a risk-adjusted basis. Pure timing components shown faintly for context.}
 \end{frame}
 
 % ============================================================
 % SLIDE 14: Risk-return scatter
 % ============================================================
 \begin{frame}{Risk-return: Inertia at the top}
-  \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.86\textwidth]{figures/SLIDE_07_risk_return_scatter.png}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_07_risk_return_scatter.png}
   \end{center}
-  \vspace{-2pt}
-  {\small \emphp{Inertia} achieves the highest Sharpe of any strategy tested, at less than half the volatility of Static FF5.}
+  \vspace{-4pt}
+  {\footnotesize \emphp{Inertia} achieves the highest Sharpe of any strategy tested, at less than half the volatility of Static FF5.}
 \end{frame}
 
 % ============================================================
 % SLIDE 15: Statistical test
 % ============================================================
 \begin{frame}{Is the improvement statistically meaningful?}
-  \vspace{16pt}
-  Paired block-bootstrap test, Sharpe difference vs Static FF5 (5000 reps, 12-month blocks):
-  \vspace{16pt}
+  \vspace{6pt}
+  {\footnotesize Paired block-bootstrap test, Sharpe difference vs Static FF5 (5000 reps, 12-month blocks):}
+  \vspace{6pt}
   \begin{center}
+    \footnotesize
     \begin{tabular}{lccc}
       \toprule
       \textbf{Strategy} & \textbf{$\Delta$ Sharpe} & \textbf{95\% CI} & \textbf{$p$-value} \\
@@ -315,8 +320,8 @@
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{18pt}
-  \begin{itemize}
+  \vspace{8pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
     \item \emphp{\fundname{}} is the only strategy with a positive $\Delta$ Sharpe vs FF5
     \item Not statistically significant at the 5\% level, but the structural risk reduction is unambiguous
   \end{itemize}
@@ -400,14 +405,11 @@
 % SLIDE 20: LIVE MPSIF DEMO
 % ============================================================
 \begin{frame}{Live test: MPSIF Systematic Sub-Fund}
-  \vspace{6pt}
-  \begin{itemize}
-    \item Implemented Inertia regime weights \emphp{10 days ago} on \emphb{\$1.03M AUM} in the MPSIF Systematic Sub-Fund
-    \item Forward test underway. Top 10 current holdings:
-  \end{itemize}
+  \vspace{2pt}
+  {\footnotesize Inertia regime weights deployed \emphp{10 days ago} on \emphb{\$1.03M AUM}. Forward test underway. Top 10 current holdings:}
   \vspace{4pt}
   \begin{center}
-    \footnotesize
+    \scriptsize
     \begin{tabular}{lrrrrr}
       \toprule
       \textbf{Ticker} & \textbf{Weight} & \textbf{$z_{\text{Mom}}$} & \textbf{$z_{\text{Growth}}$} & \textbf{$z_{\text{Value}}$} & \textbf{Composite} \\
@@ -425,21 +427,19 @@
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{8pt}
-  {\footnotesize Composite = mean of $z_{\text{Mom}}$, $z_{\text{Growth}}$, $z_{\text{Value}}$.
-  Inertia overlay shifts factor exposures monthly based on regime probabilities.}
+  \vspace{4pt}
+  {\scriptsize Composite = mean of $z_{\text{Mom}}$, $z_{\text{Growth}}$, $z_{\text{Value}}$. Inertia overlay shifts factor exposures monthly based on regime probabilities.}
 \end{frame}
 
 % ============================================================
 % SLIDE 21: LIVE MPSIF EQUITY CURVE
 % ============================================================
 \begin{frame}{Live MPSIF performance to date}
-  \vspace{-2pt}
   \begin{center}
-    \includegraphics[width=0.92\textwidth]{figures/mpsif_equity_curve.png}
+    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/mpsif_equity_curve.png}
   \end{center}
-  \vspace{-2pt}
-  {\small Live since Oct 2025. Full-year return $+19.4\%$ vs S\&P 500 $+7.7\%$. Inertia regime weights deployed in May 2026; forward test underway.}
+  \vspace{-4pt}
+  {\footnotesize Live since Oct 2025. Full-year return $+19.4\%$ vs S\&P 500 $+7.7\%$. Inertia regime weights deployed in May 2026; forward test underway.}
 \end{frame}
 
 % ============================================================
