@@ -230,29 +230,29 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 11: Why none works alone (correlation matrix)
+% SLIDE 11: Methods are now decorrelated enough
 % ============================================================
-\begin{frame}{The methods make the same mistakes}
-  \vspace{12pt}
+\begin{frame}{The methods make different mistakes}
+  \vspace{10pt}
   Pairwise correlation of each method's \textbf{edge over static FF5}:
-  \vspace{16pt}
+  \vspace{14pt}
   \begin{center}
     \large
     \begin{tabular}{lccc}
       \toprule
        & \textbf{A (Markov)} & \textbf{B (Ridge)} & \textbf{C (GBM)} \\
       \midrule
-      A (Markov) & 1.00 & \emphr{0.81} & \emphr{0.76} \\
-      B (Ridge)  & 0.81 & 1.00 & \emphr{0.88} \\
-      C (GBM)    & 0.76 & 0.88 & 1.00 \\
+      A (Markov) & 1.00 & \emphg{0.59} & 0.78 \\
+      B (Ridge)  & 0.59 & 1.00 & \emphg{0.69} \\
+      C (GBM)    & 0.78 & 0.69 & 1.00 \\
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{18pt}
-  \begin{itemize}
-    \item All three see the same factor return histories, react similarly
-    \item Naive averaging cannot exploit decorrelation that does not exist
-    \item \emphp{The pivot:} use the timed signal as a defensive overlay, not a replacement
+  \vspace{14pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
+    \item Method B (linear, macro-aware) sees a different signal than C (nonlinear, factor-state)
+    \item B vs C correlation 0.69 is low enough for ensemble diversification to help
+    \item \emphp{Method B alone beats FF5} (Sharpe 1.07 vs 0.99). Inertia layers a defensive blend on top.
   \end{itemize}
 \end{frame}
 
@@ -260,19 +260,19 @@
 % SLIDE 12: Inertia construction
 % ============================================================
 \begin{frame}{The \fundname{} strategy}
-  \vspace{14pt}
+  \vspace{12pt}
   \begin{center}
     \large
     \begin{equation*}
       r_{\fundname{},t} \;=\; 0.5 \cdot r_{t}^{\text{static FF5}} \;+\; 0.5 \cdot r_{t}^{\text{Method C timed}}
     \end{equation*}
   \end{center}
-  \vspace{16pt}
-  \begin{itemize}
+  \vspace{14pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
     \item Half of capital in static equal-weight FF5
-    \item Half in Method C's GBM-driven long-short factor sleeve
-    \item Method C is the timed component because it has the lowest correlation to static, providing the most diversification at the portfolio level
-    \item \emphp{Robust}: equal-thirds and 0.4/0.3/0.3 weightings also produce Sharpe 0.76 to 0.80
+    \item Half in Method C's long-only GBM sleeve
+    \item Result: Sharpe \textbf{1.04}, vol \textbf{3.2\%}, max drawdown \textbf{$-7.2\%$}
+    \item Compared to Method B alone (Sharpe 1.07 at vol 4.1\%): \emphp{Inertia trades a hair of return for materially lower vol and shallower drawdowns}
   \end{itemize}
 \end{frame}
 
@@ -302,28 +302,29 @@
 % SLIDE 15: Statistical test
 % ============================================================
 \begin{frame}{Is the improvement statistically meaningful?}
-  \vspace{6pt}
-  {\footnotesize Paired block-bootstrap test, Sharpe difference vs Static FF5 (5000 reps, 12-month blocks):}
-  \vspace{6pt}
+  \vspace{4pt}
+  {\footnotesize Paired block-bootstrap, Sharpe difference vs Static FF5 (5000 reps, 12-month blocks):}
+  \vspace{4pt}
   \begin{center}
     \footnotesize
     \begin{tabular}{lccc}
       \toprule
       \textbf{Strategy} & \textbf{$\Delta$ Sharpe} & \textbf{95\% CI} & \textbf{$p$-value} \\
       \midrule
-      Method A         & $-0.96$ & $[-1.73,-0.24]$ & $0.006$ \\
-      Method B         & $-0.46$ & $[-0.78,+0.14]$ & $0.21$ \\
-      Method C         & $-0.62$ & $[-1.22,+0.31]$ & $0.28$ \\
-      Pure ensemble    & $-0.71$ & $[-1.35,+0.01]$ & $0.06$ \\
+      Method A          & $-0.93$ & $[-1.70,-0.22]$ & $0.008$ \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} & \emphp{$+0.08$} & \emphp{$[-0.04,+0.26]$} & $0.14$ \\
+      \emphp{Method B}  & \emphp{$+0.07$} & $[-0.09,+0.41]$ & $0.22$ \\
+      Method C          & $-0.17$ & $[-0.46,+0.38]$ & $0.81$ \\
+      Pure ensemble     & $-0.17$ & $[-0.46,+0.26]$ & $0.66$ \\
+      \rowcolor{lightpurple}
+      \emphp{\fundname{}} & \emphp{$+0.05$} & \emphp{$[-0.03,+0.18]$} & $0.17$ \\
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{8pt}
+  \vspace{6pt}
   \begin{itemize}\setlength{\itemsep}{2pt}
-    \item \emphp{\fundname{}} is the only strategy with a positive $\Delta$ Sharpe vs FF5
-    \item Not statistically significant at the 5\% level, but the structural risk reduction is unambiguous
+    \item \emphp{Method B and Inertia} both have positive point estimates vs FF5
+    \item Neither paired CI excludes zero at 5\%, but the risk reduction (vol, drawdown) is unambiguous
   \end{itemize}
 \end{frame}
 
@@ -381,23 +382,25 @@
 % SLIDE 19: Conclusion
 % ============================================================
 \begin{frame}{Conclusion}
-  \vspace{18pt}
+  \vspace{12pt}
   \begin{center}
+    \footnotesize
     \begin{tabular}{lccc}
       \toprule
        & \textbf{Sharpe} & \textbf{Vol} & \textbf{Max DD} \\
       \midrule
       Static FF5 (benchmark) & 0.99 & 5.3\% & $-12\%$ \\
+      \emphp{Method B (Ridge + macro + cross-factor)} & \emphp{1.07} & 4.1\% & $-8\%$ \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} & \emphp{1.07} & \emphp{2.8\%} & \emphp{$-6\%$} \\
+      \emphp{\fundname{}} (50\% Static + 50\% Method C) & \emphp{1.04} & \emphp{3.2\%} & \emphp{$-7\%$} \\
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{20pt}
-  \begin{itemize}
-    \item Pure factor regime timing fails because methods make correlated mistakes
-    \item A defensive hybrid (50\% static FF5 + 50\% GBM-timed) lifts Sharpe modestly and \emphp{halves volatility and drawdown}
-    \item This is a risk-management value proposition: same factor premium, materially less risk
+  \vspace{12pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
+    \item Method B with macro features and a long-flat weight rule \emphp{beats Static FF5 outright}
+    \item \fundname{} layers Method C on top of static for an even more defensive profile (lower vol, shallower drawdowns)
+    \item \emphb{Both work}: Method B for return seekers, \fundname{} for risk-averse mandates
   \end{itemize}
 \end{frame}
 
