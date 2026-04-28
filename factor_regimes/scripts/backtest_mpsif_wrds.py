@@ -123,6 +123,30 @@ def pull_data(db) -> dict:
           AND lpermno IS NOT NULL
     """, db)
 
+    # Force dtypes immediately. Parquet round-trips with pyarrow can leave
+    # date columns as string[pyarrow] dtype, which breaks date arithmetic.
+    print("\n=== Coercing dtypes ===")
+    for c in ["sp500_start", "sp500_end"]:
+        sp500[c] = pd.to_datetime(sp500[c], errors="coerce")
+    sp500["permno"] = pd.to_numeric(sp500["permno"], errors="coerce").astype("Int64")
+
+    msf["date"] = pd.to_datetime(msf["date"], errors="coerce")
+    msf["permno"] = pd.to_numeric(msf["permno"], errors="coerce").astype("Int64")
+    for c in ["ret", "prc", "shrout", "mcap_mil"]:
+        msf[c] = pd.to_numeric(msf[c], errors="coerce")
+
+    for c in ["datadate", "rdq"]:
+        fundq[c] = pd.to_datetime(fundq[c], errors="coerce")
+    fundq["permno_dummy_for_dtype"] = 0  # placeholder, not used; just to test
+    fundq.drop(columns=["permno_dummy_for_dtype"], inplace=True)
+    for c in ["revtq", "epspxq", "epsfxq", "ceqq", "niq", "oibdpq", "atq", "ltq", "oancfy"]:
+        if c in fundq.columns:
+            fundq[c] = pd.to_numeric(fundq[c], errors="coerce")
+
+    for c in ["linkdt", "linkenddt"]:
+        link[c] = pd.to_datetime(link[c], errors="coerce")
+    link["permno"] = pd.to_numeric(link["permno"], errors="coerce").astype("Int64")
+
     return {"sp500": sp500, "msf": msf, "fundq": fundq, "link": link}
 
 
@@ -341,16 +365,7 @@ def run_backtest():
     fundq = build_fundq_panel(data["fundq"], data["link"])
     msf   = data["msf"]
     sp500 = data["sp500"]
-
-    # Convert dtypes
-    msf["permno"] = msf["permno"].astype(int)
-    msf["date"]   = pd.to_datetime(msf["date"])
-    fundq["permno"] = fundq["permno"].astype(int)
-    fundq["datadate"] = pd.to_datetime(fundq["datadate"])
-    fundq["rdq"] = pd.to_datetime(fundq["rdq"])
-    sp500["permno"] = sp500["permno"].astype(int)
-    sp500["sp500_start"] = pd.to_datetime(sp500["sp500_start"])
-    sp500["sp500_end"]   = pd.to_datetime(sp500["sp500_end"])
+    # dtypes already coerced inside pull_data()
 
     # Calendar of month-ends (use CRSP month-end dates so they align with msf)
     msf_dates = sorted(msf["date"].unique())
