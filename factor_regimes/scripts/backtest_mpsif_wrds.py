@@ -388,28 +388,30 @@ def run_backtest():
     weights = pd.concat(all_weights, ignore_index=True)
 
     # Compute next-month return for each held position
+    # Vectorized merge approach: avoids slow row-by-row .loc lookups
+    # and handles pd.NA from nullable dtypes safely.
     print("\n=== Computing portfolio returns ===")
-    msf_idx = msf.set_index(["permno","date"])["ret"]
+    msf_ret = msf[["permno", "date", "ret"]].copy()
+    msf_ret["permno"] = pd.to_numeric(msf_ret["permno"], errors="coerce").astype("Int64")
+    msf_ret["ret"] = pd.to_numeric(msf_ret["ret"], errors="coerce").astype("float64")
+    weights["permno"] = pd.to_numeric(weights["permno"], errors="coerce").astype("Int64")
 
     rows = []
     for asof, grp in weights.groupby("asof"):
-        # Find the next rebalance date in the calendar (strict >)
         future_idx = next((d for d in rebalance_dates if d > asof), None)
         if future_idx is None:
             continue
-        # Sum of weight * realized monthly return between asof and future_idx
-        # Returns held one month: from asof to future_idx
-        rets = []
-        for _, row in grp.iterrows():
-            try:
-                r = msf_idx.loc[(int(row["permno"]), future_idx)]
-                rets.append(row["weight"] * float(r))
-            except KeyError:
-                rets.append(0.0)  # delisted or missing — assume zero (safest)
+        # Look up next-month returns for the held permnos in one merge
+        m_slice = msf_ret[msf_ret["date"] == future_idx][["permno", "ret"]]
+        merged = grp[["permno", "weight"]].merge(m_slice, on="permno", how="left")
+        # Treat missing/NA returns as 0 (delisted or thinly traded)
+        merged["ret"] = merged["ret"].fillna(0.0).astype("float64")
+        port_ret = float((merged["weight"].astype("float64") * merged["ret"]).sum())
         rows.append({"asof": asof,
                      "next_date": future_idx,
-                     "ret": float(np.sum(rets)),
-                     "n_holdings": len(grp)})
+                     "ret": port_ret,
+                     "n_holdings": int(len(grp))})
+
     returns = pd.DataFrame(rows).set_index("next_date").sort_index()
 
     print(f"\n  {len(returns)} monthly returns, "
