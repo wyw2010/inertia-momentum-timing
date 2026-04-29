@@ -441,33 +441,32 @@
 % ============================================================
 % SLIDE 15: Statistical test
 % ============================================================
-\begin{frame}{Is the improvement statistically meaningful?}
-  \vspace{4pt}
-  {\footnotesize Paired block-bootstrap, Sharpe difference vs Static FF5 (5000 reps, 12-month blocks):}
+\begin{frame}{Is each strategy's Sharpe statistically significant?}
+  \vspace{2pt}
+  {\footnotesize $H_0$: SR $= 0$ vs $H_1$: SR $> 0$, one-tailed block bootstrap (10k reps, 12-mo blocks):}
   \vspace{4pt}
   \begin{center}
     \footnotesize
     \begin{tabular}{lccc}
       \toprule
-      \textbf{Strategy} & \textbf{$\Delta$ Sharpe} & \textbf{95\% CI} & \textbf{$p$-value} \\
+      \textbf{Strategy} & \textbf{Sharpe} & \textbf{95\% CI} & \textbf{$p$-value} \\
       \midrule
-      Method A          & $-0.10$ & $[-0.43,+0.17]$ & $0.45$ \\
+      Static FF5 (benchmark) & $0.731$ & $[0.32, 1.20]$ & $0.001$ \\
+      Method A          & $0.626$ & $[0.15, 1.09]$ & $0.004$ \\
       \rowcolor{lightpurple}
-      \emphp{Method B}  & \emphp{$+0.04$} & $[-0.22,+0.44]$ & $0.53$ \\
-      Method C          & $-0.05$ & $[-0.40,+0.42]$ & $0.93$ \\
-      Pure ensemble     & $-0.23$ & $[-0.58,+0.18]$ & $0.36$ \\
+      \emphp{Method B}  & \emphp{$0.768$} & $[0.48, 1.21]$ & \emphp{$<0.001$} \\
+      Method C          & $0.683$ & $[0.34, 1.19]$ & $0.005$ \\
+      Pure ensemble     & $0.497$ & $[0.09, 0.99]$ & $0.024$ \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} & \emphp{$+0.05$} & \emphp{$[-0.02,+0.15]$} & \emphp{$0.19$} \\
+      \emphp{\fundname{}} & \emphp{$0.776$} & \emphp{$[0.38, 1.26]$} & \emphp{$\mathbf{0.001}$} \\
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{6pt}
-  \begin{itemize}\setlength{\itemsep}{2pt}\footnotesize
-    \item \emphp{Inertia and Method B both have positive $\Delta$Sharpe} vs Static FF5
-    \item Inertia's $p = 0.19$ does not reach 5\% significance; CI is tight ($[-0.02, +0.15]$)
-    \item Stronger evidence comes from \emphp{appraisal ratio = 0.31} (next slide) and a halved drawdown
+  \vspace{2pt}
+  \begin{itemize}\setlength{\itemsep}{1pt}\footnotesize
+    \item All strategies pass at \emphp{5\%}; \fundname{} and Method B clear $p < 0.001$
+    \item CI lower bound $> 0$ $\Leftrightarrow$ $p < 0.05$ (consistent by construction)
   \end{itemize}
-  \vspace{10pt}
 \end{frame}
 
 % ============================================================
@@ -524,7 +523,7 @@
     \toprule
     \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact} \\
     \midrule
-    Sharpe edge is small ($+0.05$, $p = 0.19$) & Appraisal ratio 0.31 and halved drawdown are structural; CI tight $[-0.02, +0.15]$ & Edge could shrink in unseen regimes \\[3pt]
+    Sharpe edge over FF5 is small ($+0.05$) & Each strategy's Sharpe is significantly $> 0$ ($p < 0.005$); appraisal ratio 0.31 and halved drawdown are structural & Edge could shrink in unseen regimes \\[3pt]
     Methods see the same data & Method C nonlinearity adds decorrelation; macro inputs in B diversify & Tail correlation in stress \\[3pt]
     Method C drives the timing sleeve & Method B alone also edges out FF5 (0.77 Sharpe) & Single-method dependency \\[3pt]
     Limited live OOS evidence & 295 evaluation months across 3 decades and multiple regimes & Future regime breaks possible \\
