@@ -15,15 +15,18 @@ def prob_to_weight(probs: pd.Series, mode: str = "linear",
     Convert a P(favorable) series to a portfolio weight on the underlying
     factor. Mode controls the mapping.
 
-    'linear'  : w = 2*p - 1   (long when p>0.5, short when p<0.5)
-    'longflat': w = 1 if p>0.5 else 0   (long-only crash shield)
-    'soft'    : w = (p - 0.5) * 2 / 0.5 = 4*(p-0.5), clipped at [-1, +1]
-                (more aggressive scaling around the midpoint)
+    'linear'   : w = 2*p - 1                  (long when p>0.5, short when p<0.5)
+    'longflat' : w = 1 if p>0.5 else 0        (long-only crash shield, binary)
+    'longonly' : w = max(2*p - 1, 0)          (long-only with confidence,
+                                               clipped to [0, 1])
+    'soft'     : w = 4*(p - 0.5), clipped     (more aggressive linear scaling)
     """
     if mode == "linear":
         w = 2 * probs - 1.0
     elif mode == "longflat":
         w = (probs > 0.5).astype(float)
+    elif mode == "longonly":
+        w = (2 * probs - 1.0).clip(lower=0.0, upper=1.0)
     elif mode == "soft":
         w = ((probs - 0.5) * 4.0).clip(-1, 1)
     else:

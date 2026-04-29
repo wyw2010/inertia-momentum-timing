@@ -1,9 +1,9 @@
 ,sharpe,ci_low,ci_high
-Static FF5,0.9947,0.3678,1.5775
-Method A,0.0661,-0.7252,0.7553
-Method B,1.0687,0.5215,1.7174
-Method C,0.9731,0.4412,1.5515
-Pure ensemble,0.8437,0.2740,1.4685
-Inertia,1.0488,0.4276,1.6399
-MPSIF backtest,0.5124,0.0081,0.9514
-MPSIF + overlay,0.5896,0.0647,1.0483
+Static FF5,0.7310,0.2688,1.1918
+Method A,0.0743,-0.4732,0.5531
+Method B,0.7680,0.4057,1.1989
+Method C,0.6826,0.2674,1.1718
+Pure ensemble,0.4969,-0.0043,0.9745
+Inertia,0.7764,0.3176,1.2471
+MPSIF backtest,0.5364,0.0461,0.9937
+MPSIF + overlay,0.5347,0.0469,0.9926

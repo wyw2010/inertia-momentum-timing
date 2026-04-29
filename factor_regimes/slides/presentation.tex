@@ -156,7 +156,7 @@
     \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_03_method_a_perf.png}
   \end{center}
   \vspace{-2pt}
-  {\small \emphr{Loses to Static FF5} (Sharpe 0.07 vs 0.99). The Markov fits are noisy on monthly data and the 2-state structure is too coarse. Useful as a contrast, not a winner.}
+  {\small \emphr{Loses to Static FF5} (Sharpe 0.07 vs 0.73). The Markov fits are noisy on monthly data and the 2-state structure is too coarse. Useful as a contrast, not a winner.}
 \end{frame}
 
 % ============================================================
@@ -189,7 +189,7 @@
     \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_04_method_b_perf.png}
   \end{center}
   \vspace{-2pt}
-  {\footnotesize \emphg{Beats Static FF5} (Sharpe \textbf{1.07} vs 0.99) at lower volatility (4.1\% vs 5.3\%) and shallower drawdown ($-8.4\%$ vs $-12\%$). \emphp{Macro features and cross-factor lags do real work.}}
+  {\footnotesize \emphg{Edges out Static FF5} (Sharpe \textbf{0.77} vs 0.73) at lower volatility (4.1\% vs 5.5\%) and shallower drawdown ($-9.1\%$ vs $-15\%$). \emphp{Macro features and cross-factor lags do real work.}}
 \end{frame}
 
 % ============================================================
@@ -223,7 +223,7 @@
     \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_05_method_c_perf.png}
   \end{center}
   \vspace{-2pt}
-  {\small \emphg{Within reach of Static FF5} (Sharpe \textbf{0.97} vs 0.99) at \emphp{one third the volatility} (1.6\% vs 5.3\%) and a \emphp{$-3.0\%$} drawdown. A near-cash defensive sleeve.}
+  {\small \emphg{Close to Static FF5} (Sharpe \textbf{0.68} vs 0.73) at \emphp{one quarter the volatility} (1.5\% vs 5.5\%) and a \emphp{$-3.6\%$} drawdown. A near-cash defensive sleeve.}
 \end{frame}
 
 % ============================================================
@@ -239,17 +239,17 @@
       \toprule
        & \textbf{A (Markov)} & \textbf{B (Ridge)} & \textbf{C (GBM)} \\
       \midrule
-      A (Markov) & 1.00 & \emphg{0.59} & 0.80 \\
-      B (Ridge)  & 0.59 & 1.00 & \emphg{0.67} \\
-      C (GBM)    & 0.80 & 0.67 & 1.00 \\
+      A (Markov) & 1.00 & \emphg{0.63} & 0.81 \\
+      B (Ridge)  & 0.63 & 1.00 & \emphg{0.71} \\
+      C (GBM)    & 0.81 & 0.71 & 1.00 \\
       \bottomrule
     \end{tabular}
   \end{center}
   \vspace{8pt}
   \begin{itemize}\setlength{\itemsep}{2pt}
     \item B (linear, macro-aware) and C (nonlinear, factor-state) see different signals
-    \item B vs C correlation 0.67 leaves room for ensemble diversification
-    \item \emphp{Method B alone beats FF5} (Sharpe 1.07 vs 0.99); Inertia uses C as a defensive overlay
+    \item B vs C correlation 0.71 leaves room for ensemble diversification
+    \item \emphp{Method B edges out FF5} (Sharpe 0.77 vs 0.73); Inertia uses C as a defensive overlay
   \end{itemize}
 \end{frame}
 
@@ -268,8 +268,8 @@
   \begin{itemize}\setlength{\itemsep}{4pt}
     \item Half of capital in static equal-weight FF5
     \item Half in Method C's long-only GBM sleeve (cross-factor features)
-    \item Result: Sharpe \emphp{\textbf{1.05}}, vol \emphp{\textbf{3.2\%}}, max drawdown \emphp{\textbf{$-7.3\%$}}
-    \item Appraisal ratio vs FF5: \emphp{\textbf{0.43}} (alpha 1.34\%, residual std 3.14\%)
+    \item Result: Sharpe \emphp{\textbf{0.78}}, vol \emphp{\textbf{3.3\%}}, max drawdown \emphp{\textbf{$-9.1\%$}}
+    \item Appraisal ratio vs FF5: \emphp{\textbf{0.31}} (alpha 0.21\%/mo, residual std 0.62\%)
   \end{itemize}
 \end{frame}
 
@@ -281,7 +281,7 @@
     \includegraphics[height=0.58\textheight, keepaspectratio]{figures/SLIDE_06_scoreboard_cumret.png}
   \end{center}
   \vspace{-2pt}
-  {\footnotesize Static FF5 ends higher in absolute terms, but only because it runs at \emphp{1.7x} the volatility. The next two slides show what happens when we adjust for risk.}
+  {\footnotesize Static FF5 ends higher in absolute terms, but only because it runs at \emphp{1.7x} the volatility of Inertia. The next two slides show what happens when we adjust for risk.}
   \vspace{8pt}
 \end{frame}
 
@@ -321,21 +321,21 @@
       \toprule
       \textbf{Strategy} & \textbf{$\Delta$ Sharpe} & \textbf{95\% CI} & \textbf{$p$-value} \\
       \midrule
-      Method A          & $-0.93$ & $[-1.70,-0.22]$ & $0.008$ \\
+      Method A          & $-0.66$ & $[-1.22,-0.11]$ & $0.018$ \\
       \rowcolor{lightpurple}
-      \emphp{Method B}  & \emphp{$+0.07$} & $[-0.09,+0.41]$ & $0.22$ \\
-      Method C          & $-0.02$ & $[-0.30,+0.40]$ & $0.71$ \\
-      Pure ensemble     & $-0.15$ & $[-0.46,+0.28]$ & $0.70$ \\
+      \emphp{Method B}  & \emphp{$+0.04$} & $[-0.22,+0.44]$ & $0.53$ \\
+      Method C          & $-0.05$ & $[-0.40,+0.42]$ & $0.93$ \\
+      Pure ensemble     & $-0.23$ & $[-0.58,+0.18]$ & $0.36$ \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} & \emphp{$+0.05$} & \emphp{$[-0.01,+0.15]$} & \emphp{$0.079$} \\
+      \emphp{\fundname{}} & \emphp{$+0.05$} & \emphp{$[-0.02,+0.15]$} & \emphp{$0.19$} \\
       \bottomrule
     \end{tabular}
   \end{center}
   \vspace{6pt}
   \begin{itemize}\setlength{\itemsep}{2pt}\footnotesize
     \item \emphp{Inertia and Method B both have positive $\Delta$Sharpe} vs Static FF5
-    \item Inertia's $p = 0.079$ falls just outside 5\%; CI is tight ($[-0.01, +0.15]$)
-    \item Stronger evidence comes from \emphp{appraisal ratio = 0.43} (next slide) and a halved drawdown
+    \item Inertia's $p = 0.19$ does not reach 5\% significance; CI is tight ($[-0.02, +0.15]$)
+    \item Stronger evidence comes from \emphp{appraisal ratio = 0.31} (next slide) and a halved drawdown
   \end{itemize}
   \vspace{10pt}
 \end{frame}
@@ -354,20 +354,20 @@
       \textbf{Strategy} & $\alpha$ \textbf{(ann.)} & \textbf{Residual std} & \textbf{Appraisal ratio} \\
       \midrule
       Static FF5 (benchmark) & --- & --- & --- \\
-      Method A & $+0.3\%$ & $4.3\%$ & $0.06$ \\
+      Method A & $+0.2\%$ & $4.2\%$ & $0.05$ \\
       \rowcolor{lightpurple}
-      \emphp{Method B} & \emphp{$+1.1\%$} & $2.5\%$ & \emphp{$0.45$} \\
-      Method C & $+0.6\%$ & $1.2\%$ & $0.46$ \\
-      Pure ensemble & $+0.6\%$ & $2.0\%$ & $0.32$ \\
+      \emphp{Method B} & \emphp{$+0.8\%$} & $2.6\%$ & \emphp{$0.32$} \\
+      Method C & $+0.4\%$ & $1.2\%$ & $0.31$ \\
+      Pure ensemble & $+0.2\%$ & $1.3\%$ & $0.12$ \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} & \emphp{$+1.3\%$} & $3.1\%$ & \emphp{$\mathbf{0.43}$} \\
+      \emphp{\fundname{}} & \emphp{$+0.2\%$} & $0.6\%$ & \emphp{$\mathbf{0.31}$} \\
       \bottomrule
     \end{tabular}
   \end{center}
   \vspace{4pt}
   \begin{itemize}\setlength{\itemsep}{1pt}\footnotesize
-    \item \fundname{} earns \emphp{1.3\%/yr of alpha} that FF5 alone cannot deliver
-    \item Appraisal ratio of \emphp{0.43} is comparable to a top-quartile active equity manager
+    \item \fundname{} earns positive alpha vs FF5 even at half the volatility
+    \item Appraisal ratio of \emphp{0.31} is competitive with active equity managers
   \end{itemize}
 \end{frame}
 
@@ -394,10 +394,10 @@
     \toprule
     \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact} \\
     \midrule
-    Sharpe edge is small ($+0.05$, $p = 0.079$) & Appraisal ratio 0.43 and halved drawdown are structural; CI tight $[-0.01, +0.15]$ & Edge could shrink in unseen regimes \\[3pt]
+    Sharpe edge is small ($+0.05$, $p = 0.19$) & Appraisal ratio 0.31 and halved drawdown are structural; CI tight $[-0.02, +0.15]$ & Edge could shrink in unseen regimes \\[3pt]
     Methods see the same data & Method C nonlinearity adds decorrelation; macro inputs in B diversify & Tail correlation in stress \\[3pt]
-    Method C drives the timing sleeve & Method B alone also beats FF5 (1.07 Sharpe) & Single-method dependency \\[3pt]
-    Limited live OOS evidence & 208 evaluation months across 3 decades and multiple regimes & Future regime breaks possible \\
+    Method C drives the timing sleeve & Method B alone also edges out FF5 (0.77 Sharpe) & Single-method dependency \\[3pt]
+    Limited live OOS evidence & 295 evaluation months across 3 decades and multiple regimes & Future regime breaks possible \\
     \bottomrule
   \end{tabular}
   \end{center}
@@ -428,17 +428,17 @@
       \toprule
        & \textbf{Sharpe} & \textbf{Vol} & \textbf{Max DD} & \textbf{Appraisal} \\
       \midrule
-      Static FF5 (benchmark) & 0.99 & 5.3\% & $-12\%$ & --- \\
-      \emphp{Method B} (Ridge, macro features) & \emphp{1.07} & 4.1\% & $-8\%$ & 0.45 \\
+      Static FF5 (benchmark) & 0.73 & 5.5\% & $-15\%$ & --- \\
+      \emphp{Method B} (Ridge, macro features) & \emphp{0.77} & 4.1\% & $-9\%$ & 0.32 \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} (Static + Method C) & \emphp{1.05} & \emphp{3.2\%} & \emphp{$-7\%$} & \emphp{\textbf{0.43}} \\
+      \emphp{\fundname{}} (Static + Method C) & \emphp{0.78} & \emphp{3.3\%} & \emphp{$-9\%$} & \emphp{\textbf{0.31}} \\
       \bottomrule
     \end{tabular}
   \end{center}
   \vspace{8pt}
   \begin{itemize}\setlength{\itemsep}{2pt}
-    \item Method B beats Static FF5 on a stand-alone Sharpe basis (1.07 vs 0.99)
-    \item \fundname{} earns \emphp{1.3\%/yr of alpha} (appraisal 0.43) and \emphp{halves} both vol and drawdown
+    \item Method B edges out Static FF5 on a stand-alone Sharpe basis (0.77 vs 0.73)
+    \item \fundname{} delivers a similar Sharpe (0.78) at \emphp{40\% lower volatility} and shallower drawdown
     \item \emphb{Two flavors}: Method B for return seekers, \fundname{} for risk-averse mandates
   \end{itemize}
 \end{frame}
