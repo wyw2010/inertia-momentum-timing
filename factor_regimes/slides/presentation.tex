@@ -28,7 +28,7 @@
 \setbeamerfont{title}{family=\rmfamily, series=\bfseries}
 \setbeamerfont{author}{family=\rmfamily}
 \setbeamerfont{normal text}{family=\rmfamily}
-\setbeamersize{text margin left=10mm, text margin right=10mm}
+\setbeamersize{text margin left=14mm, text margin right=14mm}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{headline}{}
 
@@ -44,8 +44,8 @@
 
 \setbeamertemplate{footline}{%
   \leavevmode%
-  \hbox{\begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1ex,
-        leftskip=12mm, rightskip=12mm]{footerline}%
+  \hbox{\begin{beamercolorbox}[wd=\paperwidth, ht=3ex, dp=2ex,
+        leftskip=14mm, rightskip=14mm]{footerline}%
   \hspace*{0pt}\hfill{\footnotesize\color{gray}\insertframenumber\,/\,\inserttotalframenumber}%
   \end{beamercolorbox}}%
 }
@@ -66,15 +66,16 @@
 % SLIDE 1: TITLE
 % ============================================================
 \begin{frame}[plain]
-  \vspace{1.6cm}
+  \vspace{0.9cm}
   \begin{center}
     {\Huge\bfseries\color{inertiapurple} Inertia}\\[14pt]
-    {\large\itshape Factor Regime Detection in the FF5 Universe}\\[34pt]
-    {\color{inertiapurple}\rule{0.45\textwidth}{0.5pt}}\\[34pt]
+    {\large\itshape Factor Regime Detection in the FF5 Universe}\\[28pt]
+    {\color{inertiapurple}\rule{0.45\textwidth}{0.5pt}}\\[28pt]
     {\large Will Wu \,\textbullet\, Kathy Yang}\\[10pt]
     {\normalsize UG54 Data Driven Investing\, \textbullet\, Spring 2026}\\[6pt]
     {\small\color{inertiablue} Topic: Timing Strategies\, \textbullet\, Factor Investing\, \textbullet\, Machine Learning}
   \end{center}
+  \vspace{0.6cm}
 \end{frame}
 
 % ============================================================
@@ -82,7 +83,7 @@
 % ============================================================
 \begin{frame}{Factor returns are not constant}
   \begin{center}
-    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_01_ff5_cumret.png}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_01_ff5_cumret.png}
   \end{center}
   \vspace{-4pt}
   {\footnotesize Each FF5 factor compounds at a different rate, with multi-year regimes of leadership and underperformance. \emphp{If we could time the regimes, we could capture more of the premium with less of the risk.}}
@@ -93,7 +94,7 @@
 % ============================================================
 \begin{frame}{Even a diversified FF5 portfolio crashes}
   \begin{center}
-    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_02_static_ff5_drawdown.png}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_02_static_ff5_drawdown.png}
   \end{center}
   \vspace{-4pt}
   {\footnotesize Equal-weight FF5 has lost more than 20\% in three separate episodes since 1963. Crashes are conditional, not random. \emphp{They are forecastable from the right state variables.}}
@@ -129,17 +130,17 @@
 % SLIDE 5: Method A explained
 % ============================================================
 \begin{frame}{Method A: Markov regime switching}
-  \vspace{10pt}
+  \vspace{6pt}
   \emphp{The idea}: assume each factor flips between two unobserved ``moods'': a good one with higher mean returns, and a bad one with lower returns. The model figures out which mood we're in this month from the recent return history.
-  \vspace{20pt}
+  \vspace{12pt}
   \begin{center}
   \fbox{\parbox{0.80\textwidth}{\centering
     \textbf{Two states}: ``good'' (high mean) and ``bad'' (low mean)\\[6pt]
     \textbf{Output}: $P(\text{good state today} \mid \text{returns so far})$
   }}
   \end{center}
-  \vspace{20pt}
-  \begin{itemize}\setlength{\itemsep}{3pt}
+  \vspace{12pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
     \item Fit by maximum likelihood, one model per FF5 factor
     \item Refit every 12 months on an expanding window (no peeking ahead)
     \item Higher probability $\Rightarrow$ larger weight in that factor next month
@@ -152,7 +153,7 @@
 \begin{frame}{Method A: cumulative return}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_03_method_a_perf.png}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_03_method_a_perf.png}
   \end{center}
   \vspace{-2pt}
   {\small \emphr{Loses to Static FF5} (Sharpe 0.07 vs 0.99). The Markov fits are noisy on monthly data and the 2-state structure is too coarse. Useful as a contrast, not a winner.}
@@ -162,17 +163,17 @@
 % SLIDE 7: Method B explained
 % ============================================================
 \begin{frame}{Method B: Ridge predictive regression}
-  \vspace{10pt}
+  \vspace{4pt}
   \emphp{The idea}: a simple linear forecast for next month's factor return, using past returns, recent volatility, and macro state (yield curve, credit spread, VIX). Convert the forecast into a probability the factor will outperform.
-  \vspace{16pt}
+  \vspace{8pt}
   \begin{center}
   \fbox{\parbox{0.84\textwidth}{\centering
     $\widehat{\text{return}}_{t+1} \;=\; (\text{weights}) \cdot (\text{features}_t)$\\[6pt]
     $P(\text{favorable}) \;=\; \text{sigmoid}\!\left( \widehat{\text{return}}_{t+1} \right)$, \quad rule: hold if $P > 0.5$
   }}
   \end{center}
-  \vspace{16pt}
-  \begin{itemize}\setlength{\itemsep}{3pt}
+  \vspace{8pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
     \item Features: own factor lags, cross-factor lags, and macro variables
     \item ``Ridge'' penalty shrinks weights toward zero so the model doesn't overfit
     \item Hold the factor when the model is bullish, otherwise sit in cash
@@ -185,7 +186,7 @@
 \begin{frame}{Method B: cumulative return}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_04_method_b_perf.png}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_04_method_b_perf.png}
   \end{center}
   \vspace{-2pt}
   {\footnotesize \emphg{Beats Static FF5} (Sharpe \textbf{1.07} vs 0.99) at lower volatility (4.1\% vs 5.3\%) and shallower drawdown ($-8.4\%$ vs $-12\%$). \emphp{Macro features and cross-factor lags do real work.}}
@@ -195,9 +196,9 @@
 % SLIDE 9: Method C explained
 % ============================================================
 \begin{frame}{Method C: gradient-boosted classifier}
-  \vspace{10pt}
+  \vspace{4pt}
   \emphp{The idea}: instead of predicting a number, predict a yes/no label (``will this factor beat its median next month?'') using a stack of small decision trees, each correcting the mistakes of the last.
-  \vspace{14pt}
+  \vspace{8pt}
   \begin{center}
   \fbox{\parbox{0.84\textwidth}{\centering
     \textbf{Label}: 1 if next-month return $>$ training median, else 0\\[6pt]
@@ -205,8 +206,8 @@
     \textbf{Output}: $P(\text{above median})$, weight $= \max(2P - 1,\, 0)$
   }}
   \end{center}
-  \vspace{14pt}
-  \begin{itemize}\setlength{\itemsep}{3pt}
+  \vspace{8pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
     \item Features: cross-factor lags only (macro variables hurt this model)
     \item Captures nonlinear patterns the linear Ridge model can't see
     \item Long-only weight: bigger position when the model is more confident
@@ -219,7 +220,7 @@
 \begin{frame}{Method C: cumulative return}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/SLIDE_05_method_c_perf.png}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_05_method_c_perf.png}
   \end{center}
   \vspace{-2pt}
   {\small \emphg{Within reach of Static FF5} (Sharpe \textbf{0.97} vs 0.99) at \emphp{one third the volatility} (1.6\% vs 5.3\%) and a \emphp{$-3.0\%$} drawdown. A near-cash defensive sleeve.}
@@ -277,7 +278,7 @@
 % ============================================================
 \begin{frame}{Cumulative return: 2000 to 2024}
   \begin{center}
-    \includegraphics[height=0.62\textheight, keepaspectratio]{figures/SLIDE_06_scoreboard_cumret.png}
+    \includegraphics[height=0.58\textheight, keepaspectratio]{figures/SLIDE_06_scoreboard_cumret.png}
   \end{center}
   \vspace{-2pt}
   {\footnotesize Static FF5 ends higher in absolute terms, but only because it runs at \emphp{1.7x} the volatility. The next two slides show what happens when we adjust for risk.}
@@ -289,7 +290,7 @@
 % ============================================================
 \begin{frame}{Same chart, vol-matched to Static FF5}
   \begin{center}
-    \includegraphics[height=0.62\textheight, keepaspectratio]{figures/SLIDE_06b_vol_matched_cumret.png}
+    \includegraphics[height=0.58\textheight, keepaspectratio]{figures/SLIDE_06b_vol_matched_cumret.png}
   \end{center}
   \vspace{-2pt}
   {\footnotesize Each strategy levered (or de-levered) to Static FF5's vol via index futures (RF + 5 bp financing). \emphp{Method B and Inertia} now sit alongside FF5; the timing alpha is real but small.}
@@ -300,7 +301,7 @@
 % ============================================================
 \begin{frame}{Risk-return: Inertia at the top}
   \begin{center}
-    \includegraphics[height=0.62\textheight, keepaspectratio]{figures/SLIDE_07_risk_return_scatter.png}
+    \includegraphics[height=0.58\textheight, keepaspectratio]{figures/SLIDE_07_risk_return_scatter.png}
   \end{center}
   \vspace{-2pt}
   {\footnotesize \emphp{Inertia} and \emphp{Method B} sit above the FF5 risk-return frontier. Inertia trades highest Sharpe and shallowest drawdown at the price of lower absolute return.}
@@ -376,7 +377,7 @@
 \begin{frame}{Where Inertia protects: crisis episodes}
   \vspace{-2pt}
   \begin{center}
-    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/19_inertia_crisis_zoom.png}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/19_inertia_crisis_zoom.png}
   \end{center}
   \vspace{-2pt}
   {\small Inertia (purple) holds up through both the 2008 GFC and the 2020-22 COVID + inflation sequence, while static FF5 (blue) absorbs the full impact.}
@@ -386,21 +387,20 @@
 % SLIDE 17: Risks
 % ============================================================
 \begin{frame}{Honest risks}
-  \vspace{12pt}
+  \vspace{6pt}
   \begin{center}
-  \small
-  \begin{tabular}{p{0.30\textwidth} p{0.40\textwidth} p{0.20\textwidth}}
+  \footnotesize
+  \begin{tabular}{p{0.28\textwidth} p{0.38\textwidth} p{0.22\textwidth}}
     \toprule
     \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact} \\
     \midrule
-    Sharpe edge is small ($+0.05$, $p = 0.079$) & Appraisal ratio of 0.43 and halved drawdown are structural; CI is tight $[-0.01, +0.15]$ & Edge could shrink in unseen regimes \\[4pt]
-    Methods see the same data & Method C nonlinearity gives partial decorrelation; macro inputs in B add diversification & Tail correlation in stress \\[4pt]
-    Method C drives the timing sleeve & Method B alone also beats FF5 (1.07 Sharpe), so dependency is partial & Single-method dependency \\[4pt]
+    Sharpe edge is small ($+0.05$, $p = 0.079$) & Appraisal ratio 0.43 and halved drawdown are structural; CI tight $[-0.01, +0.15]$ & Edge could shrink in unseen regimes \\[3pt]
+    Methods see the same data & Method C nonlinearity adds decorrelation; macro inputs in B diversify & Tail correlation in stress \\[3pt]
+    Method C drives the timing sleeve & Method B alone also beats FF5 (1.07 Sharpe) & Single-method dependency \\[3pt]
     Limited live OOS evidence & 208 evaluation months across 3 decades and multiple regimes & Future regime breaks possible \\
     \bottomrule
   \end{tabular}
   \end{center}
-  \vspace{4pt}
 \end{frame}
 
 % ============================================================
@@ -421,7 +421,7 @@
 % SLIDE 19: Conclusion
 % ============================================================
 \begin{frame}{Conclusion}
-  \vspace{14pt}
+  \vspace{8pt}
   \begin{center}
     \footnotesize
     \begin{tabular}{lcccc}
@@ -429,19 +429,18 @@
        & \textbf{Sharpe} & \textbf{Vol} & \textbf{Max DD} & \textbf{Appraisal} \\
       \midrule
       Static FF5 (benchmark) & 0.99 & 5.3\% & $-12\%$ & --- \\
-      \emphp{Method B} (Ridge + macro + cross-factor) & \emphp{1.07} & 4.1\% & $-8\%$ & 0.45 \\
+      \emphp{Method B} (Ridge, macro features) & \emphp{1.07} & 4.1\% & $-8\%$ & 0.45 \\
       \rowcolor{lightpurple}
-      \emphp{\fundname{}} (50\% Static + 50\% Method C) & \emphp{1.05} & \emphp{3.2\%} & \emphp{$-7\%$} & \emphp{\textbf{0.43}} \\
+      \emphp{\fundname{}} (Static + Method C) & \emphp{1.05} & \emphp{3.2\%} & \emphp{$-7\%$} & \emphp{\textbf{0.43}} \\
       \bottomrule
     \end{tabular}
   \end{center}
-  \vspace{14pt}
-  \begin{itemize}\setlength{\itemsep}{3pt}
+  \vspace{8pt}
+  \begin{itemize}\setlength{\itemsep}{2pt}
     \item Method B beats Static FF5 on a stand-alone Sharpe basis (1.07 vs 0.99)
     \item \fundname{} earns \emphp{1.3\%/yr of alpha} (appraisal 0.43) and \emphp{halves} both vol and drawdown
     \item \emphb{Two flavors}: Method B for return seekers, \fundname{} for risk-averse mandates
   \end{itemize}
-  \vspace{14pt}
 \end{frame}
 
 % ============================================================
@@ -479,7 +478,7 @@
 % ============================================================
 \begin{frame}{Live MPSIF performance to date}
   \begin{center}
-    \includegraphics[height=0.66\textheight, keepaspectratio]{figures/mpsif_equity_curve.png}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/mpsif_equity_curve.png}
   \end{center}
   \vspace{-4pt}
   {\footnotesize Live since Oct 2025. Full-year return $+19.4\%$ vs S\&P 500 $+7.7\%$. Inertia regime weights deployed in May 2026; forward test underway.}
