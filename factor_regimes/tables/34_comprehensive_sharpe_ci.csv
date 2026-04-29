@@ -1,6 +1,6 @@
 ,sharpe,ci_low,ci_high
 Static FF5,0.7310,0.2688,1.1918
-Method A,0.0743,-0.4732,0.5531
+Method A,0.6262,0.0830,1.0841
 Method B,0.7680,0.4057,1.1989
 Method C,0.6826,0.2674,1.1718
 Pure ensemble,0.4969,-0.0043,0.9745

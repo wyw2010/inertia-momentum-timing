@@ -109,21 +109,21 @@
   \vspace{2pt}
   \begin{center}
   \scriptsize
-  \begin{tabular}{p{0.10\textwidth} p{0.18\textwidth} p{0.30\textwidth} p{0.20\textwidth} p{0.07\textwidth}}
+  \begin{tabular}{@{}p{0.09\textwidth} p{0.20\textwidth} p{0.34\textwidth} p{0.18\textwidth} p{0.05\textwidth}@{}}
     \toprule
-     & \textbf{Family} & \textbf{Features} & \textbf{Weight rule} & \textbf{Short?} \\
+     & \textbf{Family} & \textbf{Features} & \textbf{Weight} & \textbf{Short?} \\
     \midrule
-    \emphp{A. Markov} & State-space (Hamilton 1989) & Each factor's own returns & linear $w = 2P{-}1$ & yes \\[3pt]
-    \emphp{B. Ridge}  & Linear regression (regularized) & Cross-factor lags, vols, + \emphp{macro} (VIX, term, credit) & long-flat $w \in \{0,1\}$ & no \\[3pt]
-    \emphp{C. GBM}    & Tree boosting (200 trees) & Cross-factor lags + vols (no macro) & long-only $w = \max(2P{-}1, 0)$ & no \\
+    \emphp{A. Markov} & State-space (Hamilton 1989) & Each factor's own returns & long-flat $\{0, 1\}$ & no \\[3pt]
+    \emphp{B. Ridge}  & Linear regression (regularized) & Cross-factor lags, vols, + \emphp{macro} (VIX, term, credit) & long-flat $\{0, 1\}$ & no \\[3pt]
+    \emphp{C. GBM}    & Tree boosting (200 trees) & Cross-factor lags + vols (no macro) & long-only $[0, 1]$ & no \\
     \bottomrule
   \end{tabular}
   \end{center}
   \vspace{8pt}
   \begin{itemize}\setlength{\itemsep}{2pt}\footnotesize
-    \item All three fit \textbf{independently per factor}, refit \textbf{annually} on expanding windows (no peeking)
-    \item Each outputs $P(\text{favorable})$ per factor per month
-    \item \emphp{\fundname{} ensemble} = 50\% Static FF5 + 50\% Method C (long-only) $\Rightarrow$ portfolio is fully long-only
+    \item \emphp{All three methods are long-only}: in the worst case they sit in cash, never short
+    \item Fit \textbf{independently per factor}, refit \textbf{annually} on expanding windows (no peeking)
+    \item \emphp{\fundname{} ensemble} = 50\% Static FF5 + 50\% Method C: fully invested at all times
   \end{itemize}
   \vspace{6pt}
 \end{frame}
@@ -177,12 +177,12 @@
     \begin{tabular}{@{}p{0.32\textwidth}p{0.62\textwidth}@{}}
       \textbf{Inputs} & each factor's \emphp{own monthly returns} \\[2pt]
       \textbf{Output} & $P(\text{good state today})$ \\[2pt]
-      \textbf{Weight rule} & linear: $w = 2P - 1 \in [-1, +1]$ \\[2pt]
-      \textbf{Long only?} & \emphr{No, can short} when $P < 0.5$ \\[2pt]
+      \textbf{Weight rule} & long-flat: $w = 1$ if $P > 0.5$, else $0$ \\[2pt]
+      \textbf{Long only?} & \emphg{Yes, never shorts} (long or cash) \\[2pt]
       \textbf{Refit} & every 12 months, expanding window \\[2pt]
       \textbf{Data} & Ken French Data Library (FF5 monthly returns 1963 to today) \\
     \end{tabular}\\[6pt]
-    {\scriptsize \emphp{Why it underperforms}: only one feature (own return) and 2 states is too coarse. Sharpe 0.07 over 26 years.}
+    {\scriptsize \emphp{The simplest of the three}: only one feature (own return) and 2 states. Captures coarse regime shifts, smaller information set than B and C.}
   \end{minipage}
 \end{frame}
 
@@ -195,7 +195,7 @@
     \includegraphics[height=0.60\textheight, keepaspectratio]{figures/SLIDE_03_method_a_perf.png}
   \end{center}
   \vspace{-2pt}
-  {\small \emphr{Loses to Static FF5} (Sharpe 0.07 vs 0.73). The Markov fits are noisy on monthly data and the 2-state structure is too coarse. Useful as a contrast, not a winner.}
+  {\small \emphg{Within reach of Static FF5} (Sharpe \textbf{0.63} vs 0.73) at lower volatility (3.8\% vs 5.5\%) and shallower drawdown ($-10.1\%$ vs $-15\%$). The simplest of the three timing models, and it still adds risk-management value.}
 \end{frame}
 
 % ============================================================
@@ -369,9 +369,9 @@
       \toprule
        & \textbf{A (Markov)} & \textbf{B (Ridge)} & \textbf{C (GBM)} \\
       \midrule
-      A (Markov) & 1.00 & \emphg{0.63} & 0.81 \\
-      B (Ridge)  & 0.63 & 1.00 & \emphg{0.71} \\
-      C (GBM)    & 0.81 & 0.71 & 1.00 \\
+      A (Markov) & 1.00 & \emphg{0.56} & 0.74 \\
+      B (Ridge)  & 0.56 & 1.00 & \emphg{0.71} \\
+      C (GBM)    & 0.74 & 0.71 & 1.00 \\
       \bottomrule
     \end{tabular}
   \end{center}
@@ -451,7 +451,7 @@
       \toprule
       \textbf{Strategy} & \textbf{$\Delta$ Sharpe} & \textbf{95\% CI} & \textbf{$p$-value} \\
       \midrule
-      Method A          & $-0.66$ & $[-1.22,-0.11]$ & $0.018$ \\
+      Method A          & $-0.10$ & $[-0.43,+0.17]$ & $0.45$ \\
       \rowcolor{lightpurple}
       \emphp{Method B}  & \emphp{$+0.04$} & $[-0.22,+0.44]$ & $0.53$ \\
       Method C          & $-0.05$ & $[-0.40,+0.42]$ & $0.93$ \\
@@ -484,7 +484,7 @@
       \textbf{Strategy} & $\alpha$ \textbf{(ann.)} & \textbf{Residual std} & \textbf{Appraisal ratio} \\
       \midrule
       Static FF5 (benchmark) & --- & --- & --- \\
-      Method A & $+0.2\%$ & $4.2\%$ & $0.05$ \\
+      Method A & $+0.4\%$ & $2.6\%$ & $0.14$ \\
       \rowcolor{lightpurple}
       \emphp{Method B} & \emphp{$+0.8\%$} & $2.6\%$ & \emphp{$0.32$} \\
       Method C & $+0.4\%$ & $1.2\%$ & $0.31$ \\
