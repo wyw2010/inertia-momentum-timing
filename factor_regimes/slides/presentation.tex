@@ -11,6 +11,8 @@
 \usepackage{tabularx}
 \usepackage{array}
 \usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, fit, calc}
 
 % ===================== COLORS =====================
 \definecolor{inertiapurple}{HTML}{5D4E8C}
@@ -104,26 +106,26 @@
 % SLIDE 4: Three methods at a glance
 % ============================================================
 \begin{frame}{Three regime-detection methods}
-  \vspace{6pt}
+  \vspace{2pt}
   \begin{center}
-  \footnotesize
-  \begin{tabular}{p{0.18\textwidth} p{0.32\textwidth} p{0.34\textwidth}}
+  \scriptsize
+  \begin{tabular}{p{0.10\textwidth} p{0.18\textwidth} p{0.30\textwidth} p{0.20\textwidth} p{0.07\textwidth}}
     \toprule
-    \textbf{Method} & \textbf{Family} & \textbf{What it learns from} \\
+     & \textbf{Family} & \textbf{Features} & \textbf{Weight rule} & \textbf{Short?} \\
     \midrule
-    \emphp{A. Markov} & Econometric state-space (Hamilton 1989) & Each factor's own return history \\[4pt]
-    \emphp{B. Ridge}  & Linear ML, regularized regression & Factor lags + rolling volatilities \\[4pt]
-    \emphp{C. GBM}    & Tree-based machine learning & Same features, nonlinear interactions \\
+    \emphp{A. Markov} & State-space (Hamilton 1989) & Each factor's own returns & linear $w = 2P{-}1$ & yes \\[3pt]
+    \emphp{B. Ridge}  & Linear regression (regularized) & Cross-factor lags, vols, + \emphp{macro} (VIX, term, credit) & long-flat $w \in \{0,1\}$ & no \\[3pt]
+    \emphp{C. GBM}    & Tree boosting (200 trees) & Cross-factor lags + vols (no macro) & long-only $w = \max(2P{-}1, 0)$ & no \\
     \bottomrule
   \end{tabular}
   \end{center}
   \vspace{8pt}
-  \begin{itemize}\setlength{\itemsep}{2pt}
-    \item All three fit \textbf{independently per factor}, refit \textbf{annually} on expanding windows
+  \begin{itemize}\setlength{\itemsep}{2pt}\footnotesize
+    \item All three fit \textbf{independently per factor}, refit \textbf{annually} on expanding windows (no peeking)
     \item Each outputs $P(\text{favorable})$ per factor per month
-    \item Same out-of-sample discipline, same features, same backtest harness
+    \item \emphp{\fundname{} ensemble} = 50\% Static FF5 + 50\% Method C (long-only) $\Rightarrow$ portfolio is fully long-only
   \end{itemize}
-  \vspace{14pt}
+  \vspace{6pt}
 \end{frame}
 
 % ============================================================
@@ -145,6 +147,43 @@
     \item Refit every 12 months on an expanding window (no peeking ahead)
     \item Higher probability $\Rightarrow$ larger weight in that factor next month
   \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 5b: Method A deep dive
+% ============================================================
+\begin{frame}{Method A: under the hood}
+  \vspace{4pt}
+  \begin{minipage}[t]{0.42\textwidth}
+    \vspace{0pt}
+    \centering
+    \begin{tikzpicture}[
+        good/.style={circle, draw=inertiagreen, fill=inertiagreen!10, thick, minimum size=14mm, font=\small\bfseries},
+        bad/.style={circle, draw=inertiared, fill=inertiared!10, thick, minimum size=14mm, font=\small\bfseries},
+        > = Stealth
+      ]
+      \node[good] (G) at (0,0) {Good};
+      \node[bad]  (B) at (3.0,0) {Bad};
+      \draw[->, thick] (G) edge[bend left=20] node[above]{$p_{gb}$} (B);
+      \draw[->, thick] (B) edge[bend left=20] node[below]{$p_{bg}$} (G);
+      \draw[->, thick] (G) edge[loop above] node[above]{$p_{gg}$} (G);
+      \draw[->, thick] (B) edge[loop above] node[above]{$p_{bb}$} (B);
+    \end{tikzpicture}\\[6pt]
+    {\scriptsize Each factor flips between two unobserved moods. The forward filter infers $P(s_t \mid r_{1..t})$ each month.}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.54\textwidth}
+    \vspace{0pt}
+    \scriptsize
+    \begin{tabular}{@{}p{0.32\textwidth}p{0.62\textwidth}@{}}
+      \textbf{Inputs} & each factor's \emphp{own monthly returns} \\[2pt]
+      \textbf{Output} & $P(\text{good state today})$ \\[2pt]
+      \textbf{Weight rule} & linear: $w = 2P - 1 \in [-1, +1]$ \\[2pt]
+      \textbf{Long only?} & \emphr{No, can short} when $P < 0.5$ \\[2pt]
+      \textbf{Refit} & every 12 months, expanding window \\[2pt]
+      \textbf{Data} & Ken French Data Library (FF5 monthly returns 1963 to today) \\
+    \end{tabular}\\[6pt]
+    {\scriptsize \emphp{Why it underperforms}: only one feature (own return) and 2 states is too coarse. Sharpe 0.07 over 26 years.}
+  \end{minipage}
 \end{frame}
 
 % ============================================================
@@ -181,6 +220,51 @@
 \end{frame}
 
 % ============================================================
+% SLIDE 7b: Method B deep dive
+% ============================================================
+\begin{frame}{Method B: under the hood}
+  \vspace{4pt}
+  \begin{minipage}[t]{0.46\textwidth}
+    \vspace{0pt}
+    \centering
+    \begin{tikzpicture}[
+        node distance=6mm,
+        myblock/.style={draw, rounded corners=2pt, minimum height=7mm, align=center, font=\scriptsize, inner sep=3pt},
+        feat/.style={myblock, fill=inertiablue!12, draw=inertiablue, minimum width=24mm},
+        op/.style={myblock, fill=inertiapurple!15, draw=inertiapurple, minimum width=22mm},
+        outbox/.style={myblock, fill=inertiagreen!15, draw=inertiagreen, minimum width=24mm},
+        > = Stealth
+      ]
+      \node[feat] (f1) {own factor lags};
+      \node[feat, below=2mm of f1] (f2) {cross-factor vols};
+      \node[feat, below=2mm of f2] (f3) {macro: VIX, term, credit};
+      \node[op, right=10mm of f2] (b)  {RidgeCV $\hat r_{t+1}$};
+      \node[op, below=4mm of b]   (s)  {sigmoid};
+      \node[outbox, below=4mm of s]  (o)  {$P > 0.5 \Rightarrow$ hold};
+      \draw[->, thick, gray] (f1.east) -- (b.west);
+      \draw[->, thick, gray] (f2.east) -- (b.west);
+      \draw[->, thick, gray] (f3.east) -- (b.west);
+      \draw[->, thick] (b) -- (s);
+      \draw[->, thick] (s) -- (o);
+    \end{tikzpicture}\\[4pt]
+    {\scriptsize Predict next-month return, squash to a probability via sigmoid, hold the factor when bullish.}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    \vspace{0pt}
+    \scriptsize
+    \begin{tabular}{@{}p{0.32\textwidth}p{0.64\textwidth}@{}}
+      \textbf{Inputs (14)} & 5 cross-factor lags, 5 cross-factor 6-mo vols, \emphp{4 macro}: VIX, $\Delta$VIX, term, credit \\[2pt]
+      \textbf{Model} & RidgeCV with 5-fold CV $\alpha$, scaled features \\[2pt]
+      \textbf{Output} & $\sigma(\hat r_{t+1} / \hat\sigma_{\text{train}})$ \\[2pt]
+      \textbf{Weight rule} & long-flat: $w = 1$ if $P > 0.5$, else $0$ \\[2pt]
+      \textbf{Long only?} & \emphg{Yes, never shorts} \\[2pt]
+      \textbf{Refit} & every 12 months, expanding window \\[2pt]
+      \textbf{Data} & Ken French (factors), FRED (macro) \\
+    \end{tabular}
+  \end{minipage}
+\end{frame}
+
+% ============================================================
 % SLIDE 8: Method B performance
 % ============================================================
 \begin{frame}{Method B: cumulative return}
@@ -212,6 +296,52 @@
     \item Captures nonlinear patterns the linear Ridge model can't see
     \item Long-only weight: bigger position when the model is more confident
   \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 9b: Method C deep dive
+% ============================================================
+\begin{frame}{Method C: under the hood}
+  \vspace{4pt}
+  \begin{minipage}[t]{0.46\textwidth}
+    \vspace{0pt}
+    \centering
+    \begin{tikzpicture}[
+        tree/.style={draw, thick, rounded corners=2pt, minimum width=8mm, minimum height=6mm,
+                     font=\tiny, inner sep=2pt, fill=inertiapurple!10, draw=inertiapurple},
+        residual/.style={->, >=Stealth, thick, gray},
+        > = Stealth
+      ]
+      \node[tree] (t1) at (0, 0.0) {$T_1$};
+      \node[tree] (t2) at (1.4, 0) {$T_2$};
+      \node[font=\small] (d1) at (2.7, 0) {$\cdots$};
+      \node[tree] (tn) at (4.0, 0) {$T_{200}$};
+      \node[draw, rounded corners=2pt, fill=inertiagreen!15, draw=inertiagreen,
+            minimum width=18mm, font=\scriptsize, inner sep=3pt] (out)
+            at (2.0, -1.6) {$P(\text{above median})$};
+      \draw[residual] (t1) -- (t2) node[midway, above, font=\tiny]{residual};
+      \draw[residual] (t2) -- (d1);
+      \draw[residual] (d1) -- (tn);
+      \draw[->, thick] (t1.south) -- (out.north west);
+      \draw[->, thick] (t2.south) -- (out.north);
+      \draw[->, thick] (tn.south) -- (out.north east);
+    \end{tikzpicture}\\[4pt]
+    {\scriptsize 200 small trees added one at a time, each correcting the previous tree's mistakes.}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.50\textwidth}
+    \vspace{0pt}
+    \scriptsize
+    \begin{tabular}{@{}p{0.32\textwidth}p{0.64\textwidth}@{}}
+      \textbf{Inputs (10)} & 5 cross-factor lags, 5 cross-factor 6-mo vols (\emphr{no macro}: hurts OOS) \\[2pt]
+      \textbf{Label} & $1$ if next-month return $>$ training median \\[2pt]
+      \textbf{Model} & 200 GBM trees, depth 3, lr 0.05, subsample 0.8 \\[2pt]
+      \textbf{Output} & $P(\text{above median})$ \\[2pt]
+      \textbf{Weight rule} & long-only: $w = \max(2P - 1,\, 0)$ \\[2pt]
+      \textbf{Long only?} & \emphg{Yes, scaled by confidence} \\[2pt]
+      \textbf{Refit} & every 12 months, expanding window \\[2pt]
+      \textbf{Data} & Ken French Data Library (FF5 monthly factors only) \\
+    \end{tabular}
+  \end{minipage}
 \end{frame}
 
 % ============================================================
