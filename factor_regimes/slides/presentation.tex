@@ -513,37 +513,44 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 17: Risks
+% LIVE MPSIF DEMO (moved from after Q&A)
 % ============================================================
-\begin{frame}{Honest risks}
-  \vspace{6pt}
+\begin{frame}{Live test: MPSIF Systematic Sub-Fund}
+  \vspace{2pt}
+  {\footnotesize Inertia regime weights deployed \emphp{10 days ago} on \emphb{\$1.03M AUM}. Forward test underway. Top 10 current holdings:}
+  \vspace{4pt}
   \begin{center}
-  \footnotesize
-  \begin{tabular}{p{0.28\textwidth} p{0.38\textwidth} p{0.22\textwidth}}
-    \toprule
-    \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact} \\
-    \midrule
-    Sharpe edge over FF5 is small ($+0.05$) & Each strategy's Sharpe is significantly $> 0$ ($p < 0.005$); appraisal ratio 0.31 and halved drawdown are structural & Edge could shrink in unseen regimes \\[3pt]
-    Methods see the same data & Method C nonlinearity adds decorrelation; macro inputs in B diversify & Tail correlation in stress \\[3pt]
-    Method C drives the timing sleeve & Method B alone also edges out FF5 (0.77 Sharpe) & Single-method dependency \\[3pt]
-    Limited live OOS evidence & 295 evaluation months across 3 decades and multiple regimes & Future regime breaks possible \\
-    \bottomrule
-  \end{tabular}
+    \scriptsize
+    \begin{tabular}{lrrrrr}
+      \toprule
+      \textbf{Ticker} & \textbf{Weight} & \textbf{$z_{\text{Mom}}$} & \textbf{$z_{\text{Growth}}$} & \textbf{$z_{\text{Value}}$} & \textbf{Composite} \\
+      \midrule
+      MU   & 3.50\% & 5.68 & 2.98 & $-0.43$ & 2.74 \\
+      SNDK & 3.42\% & 5.71 & 2.87 & $-0.65$ & 2.64 \\
+      LITE & 3.18\% & 5.71 & 2.44 & $-1.06$ & 2.36 \\
+      SATS & 3.05\% & 5.71 & 1.61 & $-0.70$ & 2.21 \\
+      CIEN & 2.99\% & 5.71 & 1.69 & $-0.99$ & 2.14 \\
+      WDC  & 2.80\% & 5.71 & 0.58 & $-0.58$ & 1.90 \\
+      STX  & 2.64\% & 5.71 & 0.33 & $-0.89$ & 1.72 \\
+      TER  & 2.59\% & 4.43 & 1.50 & $-0.94$ & 1.66 \\
+      FIX  & 2.39\% & 4.03 & 1.01 & $-0.78$ & 1.42 \\
+      PSX  & 2.27\% & 0.99 & 2.48 & $+0.37$ & 1.28 \\
+      \bottomrule
+    \end{tabular}
   \end{center}
+  \vspace{4pt}
+  {\scriptsize Composite = mean of $z_{\text{Mom}}$, $z_{\text{Growth}}$, $z_{\text{Value}}$. Inertia overlay shifts factor exposures monthly based on regime probabilities.}
 \end{frame}
 
 % ============================================================
-% SLIDE 18: Why it works
+% LIVE MPSIF EQUITY CURVE (moved from after Q&A)
 % ============================================================
-\begin{frame}{Why the defensive hybrid works}
-  \vspace{16pt}
-  \begin{itemize}\setlength{\itemsep}{6pt}
-    \item \emphp{Static FF5} captures the long-run factor risk premia. Robust, well-documented, hard to beat directly.
-    \item \emphp{Method C} provides regime-conditional dampening. When the favorable probability drops, the timed sleeve goes flat, providing a natural drawdown shield.
-    \item \emphp{The 50/50 mix} preserves most of the static premium while half of capital actively manages drawdown risk.
-    \item \emphb{Class concept}: dynamic mean-variance allocation, applied conditionally to factor portfolios.
-  \end{itemize}
-  \vspace{14pt}
+\begin{frame}{Live MPSIF performance to date}
+  \begin{center}
+    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/mpsif_equity_curve.png}
+  \end{center}
+  \vspace{-4pt}
+  {\footnotesize Live since Oct 2025. Full-year return $+19.4\%$ vs S\&P 500 $+7.7\%$. Inertia regime weights deployed in May 2026; forward test underway.}
 \end{frame}
 
 % ============================================================
@@ -587,44 +594,37 @@
 \end{frame}
 
 % ============================================================
-% APPENDIX: LIVE MPSIF DEMO
+% APPENDIX: Risks (moved from before Conclusion)
 % ============================================================
-\begin{frame}{Live test: MPSIF Systematic Sub-Fund}
-  \vspace{2pt}
-  {\footnotesize Inertia regime weights deployed \emphp{10 days ago} on \emphb{\$1.03M AUM}. Forward test underway. Top 10 current holdings:}
-  \vspace{4pt}
+\begin{frame}{Honest risks}
+  \vspace{6pt}
   \begin{center}
-    \scriptsize
-    \begin{tabular}{lrrrrr}
-      \toprule
-      \textbf{Ticker} & \textbf{Weight} & \textbf{$z_{\text{Mom}}$} & \textbf{$z_{\text{Growth}}$} & \textbf{$z_{\text{Value}}$} & \textbf{Composite} \\
-      \midrule
-      MU   & 3.50\% & 5.68 & 2.98 & $-0.43$ & 2.74 \\
-      SNDK & 3.42\% & 5.71 & 2.87 & $-0.65$ & 2.64 \\
-      LITE & 3.18\% & 5.71 & 2.44 & $-1.06$ & 2.36 \\
-      SATS & 3.05\% & 5.71 & 1.61 & $-0.70$ & 2.21 \\
-      CIEN & 2.99\% & 5.71 & 1.69 & $-0.99$ & 2.14 \\
-      WDC  & 2.80\% & 5.71 & 0.58 & $-0.58$ & 1.90 \\
-      STX  & 2.64\% & 5.71 & 0.33 & $-0.89$ & 1.72 \\
-      TER  & 2.59\% & 4.43 & 1.50 & $-0.94$ & 1.66 \\
-      FIX  & 2.39\% & 4.03 & 1.01 & $-0.78$ & 1.42 \\
-      PSX  & 2.27\% & 0.99 & 2.48 & $+0.37$ & 1.28 \\
-      \bottomrule
-    \end{tabular}
+  \footnotesize
+  \begin{tabular}{p{0.28\textwidth} p{0.38\textwidth} p{0.22\textwidth}}
+    \toprule
+    \textbf{Risk} & \textbf{Mitigation} & \textbf{Impact} \\
+    \midrule
+    Sharpe edge over FF5 is small ($+0.05$) & Each strategy's Sharpe is significantly $> 0$ ($p < 0.005$); appraisal ratio 0.31 and halved drawdown are structural & Edge could shrink in unseen regimes \\[3pt]
+    Methods see the same data & Method C nonlinearity adds decorrelation; macro inputs in B diversify & Tail correlation in stress \\[3pt]
+    Method C drives the timing sleeve & Method B alone also edges out FF5 (0.77 Sharpe) & Single-method dependency \\[3pt]
+    Limited live OOS evidence & 295 evaluation months across 3 decades and multiple regimes & Future regime breaks possible \\
+    \bottomrule
+  \end{tabular}
   \end{center}
-  \vspace{4pt}
-  {\scriptsize Composite = mean of $z_{\text{Mom}}$, $z_{\text{Growth}}$, $z_{\text{Value}}$. Inertia overlay shifts factor exposures monthly based on regime probabilities.}
 \end{frame}
 
 % ============================================================
-% APPENDIX: LIVE MPSIF EQUITY CURVE
+% APPENDIX: Why the defensive hybrid works (moved from before Conclusion)
 % ============================================================
-\begin{frame}{Live MPSIF performance to date}
-  \begin{center}
-    \includegraphics[height=0.60\textheight, keepaspectratio]{figures/mpsif_equity_curve.png}
-  \end{center}
-  \vspace{-4pt}
-  {\footnotesize Live since Oct 2025. Full-year return $+19.4\%$ vs S\&P 500 $+7.7\%$. Inertia regime weights deployed in May 2026; forward test underway.}
+\begin{frame}{Why the defensive hybrid works}
+  \vspace{16pt}
+  \begin{itemize}\setlength{\itemsep}{6pt}
+    \item \emphp{Static FF5} captures the long-run factor risk premia. Robust, well-documented, hard to beat directly.
+    \item \emphp{Method C} provides regime-conditional dampening. When the favorable probability drops, the timed sleeve goes flat, providing a natural drawdown shield.
+    \item \emphp{The 50/50 mix} preserves most of the static premium while half of capital actively manages drawdown risk.
+    \item \emphb{Class concept}: dynamic mean-variance allocation, applied conditionally to factor portfolios.
+  \end{itemize}
+  \vspace{14pt}
 \end{frame}
 
 \end{document}
